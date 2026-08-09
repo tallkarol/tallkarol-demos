@@ -24,6 +24,8 @@ export type Brand = {
   product: string
   tagline: string
   accent: string
+  /** Photo behind the login panel, under a scrim (see LoginScreen). */
+  scene: string
   vars: CSSProperties
 }
 
@@ -36,6 +38,7 @@ export const BRANDS: Record<DemoKey, Brand> = {
     product: "Insights",
     tagline: "Mid-century modern audiophile furniture · WooCommerce",
     accent: "#2E4A3D",
+    scene: "/scenes/analytics.jpg",
     vars: {
       "--brand": "#2E4A3D",
       "--brand-ink": "#FFFFFF",
@@ -52,6 +55,7 @@ export const BRANDS: Record<DemoKey, Brand> = {
     product: "My orders",
     tagline: "Track your order, every step",
     accent: "#5D4037",
+    scene: "/scenes/portal.jpg",
     vars: {
       "--brand": "#5D4037",
       "--brand-ink": "#FFFFFF",

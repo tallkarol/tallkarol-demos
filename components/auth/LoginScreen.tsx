@@ -28,15 +28,26 @@ export function LoginScreen({
         className="relative hidden flex-col justify-between overflow-hidden p-10 text-white lg:flex xl:p-14"
         style={{ background: brand.accent }}
       >
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -left-24 -top-24 h-96 w-96 rounded-full opacity-25 blur-3xl"
-          style={{ background: "var(--accent)" }}
+        <Image
+          src={brand.scene}
+          alt=""
+          fill
+          sizes="55vw"
+          priority
+          className="object-cover"
         />
+        {/* Brand scrim. It runs left-to-right rather than corner-to-corner
+            because every line of copy sits in the left half: that half holds
+            at >=0.92, where full-white text clears 7:1 and the 75%-opacity
+            footnote clears 5.0:1 — even if the pixel underneath were pure
+            white. The right edge thins to 0.72 so the photograph can open up
+            where nothing has to be read. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -bottom-32 -right-16 h-[26rem] w-[26rem] rounded-full opacity-20 blur-3xl"
-          style={{ background: "#ffffff" }}
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: `linear-gradient(100deg, ${brand.accent}F5 0%, ${brand.accent}EB 55%, ${brand.accent}B8 100%)`,
+          }}
         />
 
         <Stagger className="relative" gap={80}>
@@ -81,7 +92,7 @@ export function LoginScreen({
           ))}
         </Stagger>
 
-        <p className="relative text-xs opacity-55">
+        <p className="relative text-xs opacity-75">
           {brand.company} is a fictional company created for this demo. All data
           shown is invented.
         </p>
