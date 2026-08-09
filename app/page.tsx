@@ -6,11 +6,11 @@ const demos = [
   {
     href: "/analytics",
     kind: "Internal tool",
-    product: "Harbor & Freight — Insights",
-    subject: "Store analytics for a WooCommerce merchant",
+    product: "Harbor & Pine — Insights",
+    subject: "Store analytics for a WooCommerce furniture merchant",
     body: "The reporting layer WooCommerce doesn't ship. Orders, customers, and campaign performance organised around the numbers that get decided on — with GA4 and Google Ads sitting next to store revenue.",
-    accent: "#13293D",
-    glow: "rgba(19,41,61,0.18)",
+    accent: "#2E4A3D",
+    glow: "rgba(46,74,61,0.20)",
     Icon: BarChart3,
     logins: [
       { email: "admin-demo@tallkarol.com", note: "Owner — sees margin, ad spend, exports" },
@@ -20,11 +20,11 @@ const demos = [
   {
     href: "/portal",
     kind: "Customer-facing",
-    product: "Harbor & Freight — My orders",
+    product: "Harbor & Pine — My orders",
     subject: "Customer order tracking for the same store",
     body: "Furniture is bought once and then waited on for two months. This is where the customer watches theirs get built, inspected, freighted, and delivered — so the 'where is my order?' email never gets sent.",
-    accent: "#8F4E22",
-    glow: "rgba(143,78,34,0.20)",
+    accent: "#5D4037",
+    glow: "rgba(93,64,55,0.22)",
     Icon: PackageSearch,
     logins: [
       { email: "customer-demo@tallkarol.com", note: "Customer — sees only their own orders" },
@@ -123,7 +123,7 @@ export default function DemoIndexPage() {
         </Stagger>
 
         <p className="mt-12 max-w-2xl text-xs leading-relaxed text-tk-linen/45">
-          Harbor &amp; Freight is a fictional furniture company. Both demos run on
+          Harbor &amp; Pine is a fictional mid-century-modern furniture company. Both demos run on
           one invented dataset — every customer, order, and product was made up
           for it. No client of Tall Karol appears here, and no real data of any
           kind is stored, transmitted, or displayed.

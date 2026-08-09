@@ -3,7 +3,7 @@ import { ProductTable } from "@/components/analytics/Tables"
 import { requireDemoUser, can } from "@/lib/auth"
 import { store } from "@/lib/store"
 
-export const metadata = { title: "Products — Harbor & Freight Insights" }
+export const metadata = { title: "Products — Harbor & Pine Insights" }
 
 export default async function ProductsPage() {
   const user = await requireDemoUser("analytics")

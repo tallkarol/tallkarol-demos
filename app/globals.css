@@ -17,6 +17,13 @@
   --line: #e3e0d8;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Typeface roles. Tall Karol's fonts by default; each app shell re-points
+     them at Harbor & Pine's (Playfair Display / Lato) for everything inside
+     it, and DemoBar points them back for the studio strip. */
+  --font-display: var(--font-tk-display);
+  --font-ui: var(--font-tk-ui);
+  --font-body: var(--font-tk-body);
 }
 
 @layer base {

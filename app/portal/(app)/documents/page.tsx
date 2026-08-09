@@ -5,7 +5,7 @@ import { requireDemoUser } from "@/lib/auth"
 import { store, ordersForCustomer } from "@/lib/store"
 import { longDate } from "@/lib/utils"
 
-export const metadata = { title: "Documents — Harbor & Freight" }
+export const metadata = { title: "Documents — Harbor & Pine" }
 
 export default async function DocumentsPage() {
   const user = await requireDemoUser("portal")

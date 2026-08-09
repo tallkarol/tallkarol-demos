@@ -3,7 +3,7 @@ import { CustomerTable } from "@/components/analytics/Tables"
 import { requireDemoUser } from "@/lib/auth"
 import { store } from "@/lib/store"
 
-export const metadata = { title: "Customers — Harbor & Freight Insights" }
+export const metadata = { title: "Customers — Harbor & Pine Insights" }
 
 export default async function CustomersPage() {
   await requireDemoUser("analytics")

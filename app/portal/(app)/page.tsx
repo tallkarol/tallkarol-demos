@@ -8,7 +8,7 @@ import { requireDemoUser } from "@/lib/auth"
 import { store, ordersForCustomer, type Order } from "@/lib/store"
 import { currency, longDate } from "@/lib/utils"
 
-export const metadata = { title: "My orders — Harbor & Freight" }
+export const metadata = { title: "My orders — Harbor & Pine" }
 
 function OrderCard({ order }: { order: Order }) {
   return (
@@ -24,8 +24,7 @@ function OrderCard({ order }: { order: Order }) {
               {order.item.name}
             </h2>
             <p className="mt-0.5 text-sm text-app-ink/60">
-              {[order.item.fabric, order.item.wood].filter(Boolean).join(" · ") ||
-                order.item.category}
+              {order.item.options.map((option) => option.value).join(" · ")}
               {order.item.quantity > 1 && ` · Qty ${order.item.quantity}`}
             </p>
           </div>

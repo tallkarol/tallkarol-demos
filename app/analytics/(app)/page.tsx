@@ -8,7 +8,7 @@ import { SERIES } from "@/lib/chart-theme"
 import { currency, compact, longDate } from "@/lib/utils"
 import { store, delta, total } from "@/lib/store"
 
-export const metadata = { title: "Overview — Harbor & Freight Insights" }
+export const metadata = { title: "Overview — Harbor & Pine Insights" }
 
 export default async function AnalyticsOverviewPage() {
   const user = await requireDemoUser("analytics")

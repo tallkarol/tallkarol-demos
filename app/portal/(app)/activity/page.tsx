@@ -4,7 +4,7 @@ import { ActivityTable } from "@/components/portal/ActivityTable"
 import { requireDemoUser } from "@/lib/auth"
 import { store } from "@/lib/store"
 
-export const metadata = { title: "Activity — Harbor & Freight" }
+export const metadata = { title: "Activity — Harbor & Pine" }
 
 export default async function ActivityPage() {
   const user = await requireDemoUser("portal")

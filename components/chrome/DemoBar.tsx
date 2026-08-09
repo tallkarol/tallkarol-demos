@@ -14,7 +14,18 @@ export function DemoBar({ demo }: { demo: "analytics" | "portal" }) {
   const otherLabel = demo === "analytics" ? "Client portal demo" : "Store analytics demo"
 
   return (
-    <div className="bg-tk-onyx text-tk-linen">
+    <div
+      className="bg-tk-onyx text-tk-linen"
+      /* Undo the app shell's font swap: this strip is Tall Karol's, not the
+         fictional client's. */
+      style={
+        {
+          "--font-display": "var(--font-tk-display)",
+          "--font-ui": "var(--font-tk-ui)",
+          "--font-body": "var(--font-tk-body)",
+        } as React.CSSProperties
+      }
+    >
       <div className="mx-auto flex h-9 max-w-[1600px] items-center gap-3 px-4 text-xs sm:px-6">
         <Link href="/" className="flex items-center gap-2 font-ui font-semibold hover:underline">
           <span className="grid h-4 w-4 place-items-center rounded-[3px] border border-tk-linen/60 text-[9px] leading-none">

@@ -3,7 +3,7 @@ import { DemoBar } from "@/components/chrome/DemoBar"
 import { LoginScreen } from "@/components/auth/LoginScreen"
 import { getSessionUser } from "@/lib/auth"
 
-export const metadata = { title: "Sign in — Harbor & Freight Insights" }
+export const metadata = { title: "Sign in — Harbor & Pine Insights" }
 
 export default async function AnalyticsLoginPage() {
   const user = await getSessionUser()

@@ -3,7 +3,7 @@ import { CampaignTable } from "@/components/analytics/Tables"
 import { requireDemoUser, can } from "@/lib/auth"
 import { store } from "@/lib/store"
 
-export const metadata = { title: "Campaigns — Harbor & Freight Insights" }
+export const metadata = { title: "Campaigns — Harbor & Pine Insights" }
 
 export default async function CampaignsPage() {
   const user = await requireDemoUser("analytics")

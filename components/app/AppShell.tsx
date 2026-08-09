@@ -26,8 +26,19 @@ export function AppShell({
 }) {
   const brand = BRANDS[demo]
 
+  /* Re-pointing the three role vars here means every `font-display` /
+     `font-ui` / `font-body` inside the app resolves to Harbor & Pine's
+     typefaces without touching a single component. DemoBar undoes it for
+     itself, so the Tall Karol strip keeps the studio's fonts. */
+  const shellStyle = {
+    ...brand.vars,
+    "--font-display": "var(--font-hp-display)",
+    "--font-ui": "var(--font-hp-body)",
+    "--font-body": "var(--font-hp-body)",
+  } as React.CSSProperties
+
   return (
-    <div style={brand.vars} className="min-h-screen bg-[var(--canvas)]">
+    <div style={shellStyle} className="min-h-screen bg-[var(--canvas)]">
       <DemoBar demo={demo} />
 
       <header className="sticky top-0 z-30 border-b bg-[var(--surface)]" style={{ borderColor: "var(--line)" }}>

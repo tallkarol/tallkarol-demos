@@ -46,8 +46,8 @@ export type Order = {
     category: string
     quantity: number
     unitPrice: number
-    fabric: string | null
-    wood: string | null
+    /** Configured options — finish, cane, hardware. Order matters. */
+    options: { label: string; value: string }[]
     madeToOrder: boolean
   }
   totals: { subtotal: number; discount: number; shipping: number; tax: number; total: number }

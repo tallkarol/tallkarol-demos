@@ -3,8 +3,10 @@
 Two working applications, built to be logged into. They're the proof behind the
 "Web Apps & Custom Tools" service on [tallkarol.com](https://www.tallkarol.com).
 
-One fictional company — **Harbor & Freight**, made-to-order furniture running
-WooCommerce — and two apps over one shared dataset.
+One fictional company — **Harbor & Pine**, mid-century-modern audiophile
+furniture running WooCommerce — and two apps over one shared dataset. The
+catalogue, materials, and palette follow the same brand sheet as the real
+WooCommerce build, so the two stay in step.
 
 | | What it is | Who logs in |
 |---|---|---|

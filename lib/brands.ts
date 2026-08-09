@@ -4,11 +4,16 @@ import type { DemoKey } from "@/lib/auth"
 /**
  * One fictional company, two apps.
  *
- * Harbor & Freight sells made-to-order furniture on WooCommerce. `analytics`
- * is the staff-facing reporting layer; `portal` is what the customer who
- * bought a sofa logs into to watch it get built and delivered. Same brand,
- * two audiences — so the shells deliberately don't look alike: the internal
- * tool is cool and dense, the customer portal is warm and roomy.
+ * Harbor & Pine sells mid-century-modern audiophile furniture on WooCommerce.
+ * `analytics` is the staff-facing reporting layer; `portal` is what the
+ * customer who ordered a Mariner Console logs into to watch it get built and
+ * delivered. Same brand, two audiences — so the shells deliberately don't look
+ * alike: the internal tool is cool and dense, the customer portal is warm and
+ * roomy.
+ *
+ * Colours are the brand sheet's, unchanged: Forest Green #2e4a3d, Deep Walnut
+ * #5d4037, Antique Brass #b8860b, Cane Neutral #d7ccc8. Brass is decorative
+ * only — at 3.0:1 on white it can't carry text.
  *
  * The vars land on each app shell's root element; everything inside reads them
  * (see globals.css).
@@ -22,23 +27,23 @@ export type Brand = {
   vars: CSSProperties
 }
 
-export const COMPANY = "Harbor & Freight"
+export const COMPANY = "Harbor & Pine"
 
 export const BRANDS: Record<DemoKey, Brand> = {
   analytics: {
     key: "analytics",
     company: COMPANY,
     product: "Insights",
-    tagline: "Made-to-order furniture · WooCommerce",
-    accent: "#13293D",
+    tagline: "Mid-century modern audiophile furniture · WooCommerce",
+    accent: "#2E4A3D",
     vars: {
-      "--brand": "#13293D",
+      "--brand": "#2E4A3D",
       "--brand-ink": "#FFFFFF",
-      "--brand-soft": "rgb(19 41 61 / 0.07)",
-      "--accent": "#B4652F",
-      "--canvas": "#F5F6F7",
+      "--brand-soft": "rgb(46 74 61 / 0.08)",
+      "--accent": "#B8860B",
+      "--canvas": "#F4F5F3",
       "--surface": "#FFFFFF",
-      "--line": "#E2E5E8",
+      "--line": "#E1E4DF",
     } as CSSProperties,
   },
   portal: {
@@ -46,17 +51,16 @@ export const BRANDS: Record<DemoKey, Brand> = {
     company: COMPANY,
     product: "My orders",
     tagline: "Track your order, every step",
-    // Deep copper rather than the accent copper: #B4652F is only 3.9:1 on
-    // white, which fails for button labels. This step clears 4.5:1.
-    accent: "#8F4E22",
+    accent: "#5D4037",
     vars: {
-      "--brand": "#8F4E22",
+      "--brand": "#5D4037",
       "--brand-ink": "#FFFFFF",
-      "--brand-soft": "rgb(143 78 34 / 0.08)",
-      "--accent": "#13293D",
-      "--canvas": "#FAF6F0",
+      "--brand-soft": "rgb(93 64 55 / 0.08)",
+      "--accent": "#B8860B",
+      // Cane Neutral, lifted — the warm ground the customer side sits on.
+      "--canvas": "#FAF6F3",
       "--surface": "#FFFFFF",
-      "--line": "#E8DFD4",
+      "--line": "#E4D9D3",
     } as CSSProperties,
   },
 }

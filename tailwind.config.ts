@@ -35,9 +35,12 @@ const config = {
         "st-bad": "#B72A0F",
       },
       fontFamily: {
-        display: ["var(--font-inter-tight)", "sans-serif"],
-        ui: ["var(--font-plus-jakarta)", "sans-serif"],
-        body: ["var(--font-inter)", "sans-serif"],
+        // Role vars, not typeface vars: globals.css points them at Tall
+        // Karol's fonts, and the app shells re-point them at the fictional
+        // client's. Components never name a typeface.
+        display: ["var(--font-display)", "serif"],
+        ui: ["var(--font-ui)", "sans-serif"],
+        body: ["var(--font-body)", "sans-serif"],
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       fontSize: {

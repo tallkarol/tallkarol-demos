@@ -3,7 +3,7 @@ import { DemoBar } from "@/components/chrome/DemoBar"
 import { LoginScreen } from "@/components/auth/LoginScreen"
 import { getSessionUser } from "@/lib/auth"
 
-export const metadata = { title: "Sign in — Harbor & Freight" }
+export const metadata = { title: "Sign in — Harbor & Pine" }
 
 export default async function PortalLoginPage() {
   const user = await getSessionUser()

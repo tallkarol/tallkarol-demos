@@ -41,7 +41,7 @@ export default async function OrderDetailPage({
             {item.name}
           </h1>
           <p className="mt-1 text-sm text-app-ink/60">
-            {[item.fabric, item.wood].filter(Boolean).join(" · ") || item.category}
+            {item.options.map((option) => option.value).join(" · ")}
             {item.quantity > 1 && ` · Qty ${item.quantity}`}
             {item.madeToOrder && " · Made to order"}
           </p>

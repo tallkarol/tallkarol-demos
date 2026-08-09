@@ -3,8 +3,10 @@
  *
  * Run once, commit the output: `node scripts/generate-data.mjs`
  *
- * ONE store feeds BOTH demos. Harbor & Freight is a made-up furniture company
- * running WooCommerce; the analytics suite reads this file as the merchant's
+ * ONE store feeds BOTH demos. Harbor & Pine is a made-up mid-century-modern
+ * audiophile furniture company running WooCommerce (catalogue, materials, and
+ * palette follow ~/Work/harbor-pine/harbor_pine_brand.md, so the demos and the
+ * real WooCommerce build stay in step); the analytics suite reads this file as the merchant's
  * internal reporting layer, and the customer portal reads the same orders as
  * the buyer's order tracker. That's deliberate — two apps over one dataset is
  * how the real thing works, and it means a number in the dashboard and a
@@ -66,29 +68,29 @@ const dates = Array.from({ length: DAYS }, (_, i) => isoDay(DAYS - 1 - i))
 /* ------------------------------------------------------------------ catalog */
 
 const PRODUCTS = [
-  ["Alder 3-Seat Sofa", "HF-SOF-101", "Seating", 2190, "made-to-order", 8],
-  ["Brixton Modular Sectional", "HF-SEC-118", "Seating", 3480, "made-to-order", 10],
-  ["Sable Leather Armchair", "HF-CHR-204", "Seating", 1440, "made-to-order", 7],
-  ["Perch Lounge Chair", "HF-CHR-211", "Seating", 890, "in-stock", 0],
-  ["Fenwick Oak Dining Table", "HF-TBL-302", "Tables", 2640, "made-to-order", 9],
-  ["Quarry Travertine Coffee Table", "HF-TBL-317", "Tables", 1180, "in-stock", 0],
-  ["Kestrel Dining Chair (pair)", "HF-CHR-225", "Seating", 720, "in-stock", 0],
-  ["Lowry Media Console", "HF-STO-402", "Storage", 1620, "made-to-order", 8],
-  ["Thatcher Sideboard", "HF-STO-414", "Storage", 1980, "made-to-order", 9],
-  ["Rowan Bookshelf", "HF-STO-421", "Storage", 1140, "in-stock", 0],
-  ["Marlow Upholstered Bed", "HF-BED-501", "Bedroom", 2280, "made-to-order", 8],
-  ["Nyland Nightstand", "HF-BED-512", "Bedroom", 640, "in-stock", 0],
+  ["The Mariner Console 60\"", "HP-MAR-601", "Audio", 4850, "made-to-order", 10],
+  ["The Mariner Console 72\"", "HP-MAR-721", "Audio", 5680, "made-to-order", 10],
+  ["Mariner Record Drawer Module", "HP-MAR-DRW", "Audio", 720, "in-stock", 0],
+  ["The Gallery Coffee Table", "HP-GAL-301", "Tables", 1780, "made-to-order", 8],
+  ["The Gallery Coffee Table, Petite", "HP-GAL-311", "Tables", 1490, "in-stock", 0],
+  ["The Tailored End Table", "HP-TAI-201", "Tables", 940, "in-stock", 0],
+  ["The Tailored End Table (pair)", "HP-TAI-202", "Tables", 1780, "made-to-order", 7],
+  ["Modular Bookshelf System, 3-bay", "HP-MOD-403", "Shelving", 3960, "made-to-order", 9],
+  ["Modular Bookshelf System, 5-bay", "HP-MOD-405", "Shelving", 6240, "made-to-order", 12],
+  ["Modular Bookshelf Add-on Bay", "HP-MOD-401", "Shelving", 1320, "made-to-order", 6],
 ]
 
-const FABRICS = [
-  "Heather Wool / Fog",
-  "Belgian Linen / Oat",
-  "Full-grain Leather / Chestnut",
-  "Boucle / Ivory",
-  "Performance Weave / Slate",
-]
+/**
+ * Configurable options, straight off the brand sheet: walnut veneer, woven
+ * cane, brass hardware. Cane only exists on the pieces that actually have a
+ * cane surface — the Mariner's speaker grille, the Gallery's lower shelf, and
+ * the Modular system's sliding doors.
+ */
+const FINISHES = ["Deep Walnut", "Natural Walnut", "Ebonised Oak"]
+const HARDWARE = ["Antique Brass", "Brushed Brass", "Blackened Brass"]
+const CANE = ["Natural Cane", "Smoked Cane"]
 
-const WOODS = ["White Oak", "Walnut", "Ash", "Reclaimed Elm"]
+const HAS_CANE = new Set(["HP-MAR-601", "HP-MAR-721", "HP-GAL-301", "HP-GAL-311", "HP-MOD-403", "HP-MOD-405", "HP-MOD-401"])
 
 function buildProducts() {
   const r = rng(31337)
@@ -153,7 +155,7 @@ function buildCustomers() {
           : `${first.toLowerCase()}.${last.toLowerCase()}@example.com`,
       phone: `(${Math.floor(between(r, 201, 989))}) 555-${String(Math.floor(between(r, 1000, 9999)))}`,
       address: {
-        line1: `${Math.floor(between(r, 12, 4800))} ${pick(r, ["Alder", "Cedar", "Juniper", "Marlow", "Quarry", "Rowan"])} ${pick(r, ["St", "Ave", "Rd", "Ln"])}`,
+        line1: `${Math.floor(between(r, 12, 4800))} ${pick(r, ["Alder", "Cedar", "Juniper", "Mariner", "Harbor", "Pine"])} ${pick(r, ["St", "Ave", "Rd", "Ln"])}`,
         city,
         state,
         zip,
@@ -186,7 +188,7 @@ const STAGES = [
 const EXCEPTIONS = [
   {
     afterStage: "production",
-    label: "Fabric backorder",
+    label: "Veneer backorder",
     note: "{material} is delayed at the mill. Your build slot is held and the new estimate is below.",
     addsDays: 12,
   },
@@ -257,12 +259,13 @@ function buildOrders(products, customers) {
       // utm tags always match a row on the campaigns screen.
       const attribution = pick(r, CAMPAIGNS)
 
-      const fabricChoice =
-        product.category === "Seating" || product.category === "Bedroom" ? pick(r, FABRICS) : null
-      const woodChoice =
-        product.category === "Tables" || product.category === "Storage" ? pick(r, WOODS) : null
+      const options = [
+        { label: "Finish", value: pick(r, FINISHES) },
+        ...(HAS_CANE.has(product.sku) ? [{ label: "Cane", value: pick(r, CANE) }] : []),
+        { label: "Hardware", value: pick(r, HARDWARE) },
+      ]
 
-      const quantity = product.category === "Seating" && r() > 0.75 ? 2 : 1
+      const quantity = product.price < 1000 && r() > 0.7 ? 2 : 1
       const subtotal = round(product.price * quantity)
       const whiteGlove = r() > 0.45
       const shipping = whiteGlove ? 249 : 129
@@ -271,8 +274,8 @@ function buildOrders(products, customers) {
       const tax = round((subtotal - discount) * 0.072)
 
       orders.push({
-        id: `HF-${sequence}`,
-        number: `#HF-${sequence}`,
+        id: `HP-${sequence}`,
+        number: `#HP-${sequence}`,
         customerId: customer.id,
         customerName: customer.name,
         placedOn,
@@ -286,8 +289,7 @@ function buildOrders(products, customers) {
           category: product.category,
           quantity,
           unitPrice: product.price,
-          fabric: fabricChoice,
-          wood: woodChoice,
+          options,
           madeToOrder,
         },
         totals: { subtotal, discount, shipping, tax, total: round(subtotal - discount + shipping + tax) },
@@ -309,7 +311,7 @@ function buildOrders(products, customers) {
               // than no notice at all.
               note: exception.note.replace(
                 "{material}",
-                fabricChoice ?? woodChoice ?? "A component"
+                `${options[0].value} veneer`
               ),
               addedDays: exception.addsDays,
             }
@@ -354,7 +356,7 @@ function buildDaily() {
     // different order of magnitude. Both numbers are set accordingly.
     const conversionRate = between(r, 0.006, 0.013) * (promo > 1 ? 1.3 : 1)
     const orders = Math.max(2, Math.round(sessions * conversionRate))
-    const aov = between(r, 1450, 2800)
+    const aov = between(r, 1900, 4200)
     const revenue = round(orders * aov)
     const cogs = round(revenue * between(r, 0.44, 0.56))
     const adSpend = round(between(r, 620, 1180) * (promo > 1 ? 1.45 : 1))
@@ -388,23 +390,23 @@ function buildDaily() {
 }
 
 const LANDING_PAGES = [
-  "/collections/living-room",
+  "/collections/mariner",
   "/collections/made-to-order",
-  "/products/alder-3-seat-sofa",
+  "/products/the-mariner-console",
   "/pages/design-consultation",
-  "/collections/dining",
-  "/products/fenwick-oak-dining-table",
+  "/collections/modular-shelving",
+  "/products/the-gallery-coffee-table",
 ]
 
 const CAMPAIGNS = [
   { id: "cmp_madetoorder", name: "Made-to-Order — Search", source: "google", medium: "cpc", campaign: "made_to_order_2026", channel: "paid", coupon: null, paid: true },
-  { id: "cmp_livingroom_pmax", name: "Living Room — Performance Max", source: "google", medium: "cpc", campaign: "living_room_pmax", channel: "paid", coupon: "ROOM150", paid: true },
+  { id: "cmp_livingroom_pmax", name: "Mariner Console — Performance Max", source: "google", medium: "cpc", campaign: "mariner_pmax", channel: "paid", coupon: "MARINER150", paid: true },
   { id: "cmp_brand_defense", name: "Brand Defense", source: "google", medium: "cpc", campaign: "brand_defense", channel: "paid", coupon: null, paid: true },
   { id: "cmp_consult_flow", name: "Design Consultation Flow", source: "klaviyo", medium: "email", campaign: "consult_flow", channel: "email", coupon: "CONSULT100", paid: false, email: true },
-  { id: "cmp_swatch_followup", name: "Swatch Request Follow-up", source: "klaviyo", medium: "email", campaign: "swatch_followup", channel: "email", coupon: "SWATCH75", paid: false, email: true },
+  { id: "cmp_swatch_followup", name: "Finish Sample Follow-up", source: "klaviyo", medium: "email", campaign: "sample_followup", channel: "email", coupon: "SAMPLE75", paid: false, email: true },
   { id: "cmp_cart_recovery", name: "Abandoned Cart Recovery", source: "klaviyo", medium: "email", campaign: "cart_recovery", channel: "email", coupon: "CART100", paid: false, email: true },
-  { id: "cmp_dining_social", name: "Dining Collection — Paid Social", source: "meta", medium: "paid_social", campaign: "dining_q3", channel: "other", coupon: "DINE125", paid: true },
-  { id: "cmp_partner_shelter", name: "Partner Newsletter — Shelter Mag", source: "shelterlist", medium: "referral", campaign: "partner_shelterlist", channel: "other", coupon: "SHELTER100", paid: false },
+  { id: "cmp_dining_social", name: "Modular Shelving — Paid Social", source: "meta", medium: "paid_social", campaign: "shelving_q3", channel: "other", coupon: "SHELF125", paid: true },
+  { id: "cmp_partner_shelter", name: "Partner Newsletter — Audiophile Weekly", source: "audioweekly", medium: "referral", campaign: "partner_audioweekly", channel: "other", coupon: "AUDIO100", paid: false },
 ]
 
 function buildCampaigns() {
@@ -414,7 +416,7 @@ function buildCampaigns() {
     const engagementRate = round(between(r, 0.48, 0.81), 4)
     const engagedSessions = Math.round(sessions * engagementRate)
     const conversions = Math.max(1, Math.round(sessions * between(r, 0.004, 0.016)))
-    const totalRevenue = round(conversions * between(r, 1380, 2950))
+    const totalRevenue = round(conversions * between(r, 1750, 4400))
     const couponRedemptions = c.coupon ? Math.round(conversions * between(r, 0.3, 0.75)) : 0
 
     const ads = c.paid
@@ -505,8 +507,8 @@ const auditLog = (() => {
 
 const store = {
   meta: {
-    company: "Harbor & Freight",
-    trade: "Made-to-order furniture",
+    company: "Harbor & Pine",
+    trade: "Mid-century modern audiophile furniture",
     platform: "WooCommerce 9.4",
     currency: "USD",
     periodStart: dates[0],

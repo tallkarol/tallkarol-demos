@@ -6,8 +6,10 @@ Two working demo applications, linked from tallkarol.com as proof of the
 
 ## What this is
 
-One fictional company, **Harbor & Freight** (made-to-order furniture on
-WooCommerce), and two apps over one shared dataset:
+One fictional company, **Harbor & Pine** (mid-century-modern audiophile
+furniture on WooCommerce), and two apps over one shared dataset. Catalogue,
+materials, and palette come from `~/Work/harbor-pine/harbor_pine_brand.md` —
+the same sheet driving the real WooCommerce store, so keep them in step:
 
 - `/analytics` — the merchant's internal reporting layer. The reporting
   WooCommerce doesn't ship: campaigns, orders, products, customers, with GA4
