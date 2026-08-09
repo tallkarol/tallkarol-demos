@@ -55,7 +55,11 @@ export const BRANDS: Record<DemoKey, Brand> = {
     product: "My orders",
     tagline: "Track your order, every step",
     accent: "#5D4037",
-    scene: "/scenes/portal.jpg",
+    /* White-glove delivery — the last rung of the portal's own timeline.
+       Filename carries the subject: replacing an image in place keeps the URL,
+       and Next's optimizer and Vercel's edge cache both key on URL, so a
+       same-name swap serves the old picture until the cache expires. */
+    scene: "/scenes/portal-delivery.jpg",
     vars: {
       "--brand": "#5D4037",
       "--brand-ink": "#FFFFFF",
