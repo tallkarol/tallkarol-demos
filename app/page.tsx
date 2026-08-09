@@ -49,27 +49,39 @@ export default function DemoIndexPage() {
   return (
     <main className="min-h-screen bg-tk-onyx text-tk-linen">
       <div className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
-        <Stagger className="max-w-2xl" gap={70}>
-          <p
+        <Stagger className="flex max-w-2xl items-start gap-5 sm:gap-7" gap={70}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- static SVG, no optimization pass needed */}
+          <img
             data-anim="fade"
-            className="font-ui text-tk-eyebrow uppercase text-tk-linen/60"
-          >
-            Tall Karol — live demos
-          </p>
-          <h1
-            data-anim="rise"
-            className="mt-5 font-display text-4xl font-semibold leading-tight tracking-tight sm:text-5xl"
-          >
-            One fictional company.
-            <br />
-            Three working demos.
-          </h1>
-          <p data-anim="rise" className="mt-5 text-tk-linen/70">
-            The store, its back office, and its customers&apos; view — real
-            screens, real interaction, invented data. The storefront needs no
-            login, and every app account is read-only, so nothing you click can
-            change what the next visitor sees. No signup, no email, no call.
-          </p>
+            src="/tallkarol-monogram-logo.svg"
+            alt=""
+            aria-hidden="true"
+            width={47}
+            height={64}
+            className="h-12 w-auto shrink-0 sm:h-16"
+          />
+          <div>
+            <p
+              data-anim="fade"
+              className="font-ui text-tk-eyebrow uppercase text-tk-linen/60"
+            >
+              Tall Karol — live demos
+            </p>
+            <h1
+              data-anim="rise"
+              className="mt-5 font-display text-4xl font-semibold leading-tight tracking-tight sm:text-5xl"
+            >
+              One fictional company.
+              <br />
+              Three working demos.
+            </h1>
+            <p data-anim="rise" className="mt-5 text-tk-linen/70">
+              The store, its back office, and its customers&apos; view — real
+              screens, real interaction, invented data. The storefront needs no
+              login, and every app account is read-only, so nothing you click can
+              change what the next visitor sees. No signup, no email, no call.
+            </p>
+          </div>
         </Stagger>
 
         <Stagger
