@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Each demo is dressed as a different fictional product, so the palette is
+ * per-demo and set on a wrapper element via these vars. The Tall Karol chrome
+ * (the thin bar at the top of every demo) keeps the studio palette from
+ * tailwind.config.ts and ignores them.
+ */
+:root {
+  --brand: #006965;
+  --brand-ink: #ffffff;
+  --brand-soft: rgb(0 105 101 / 0.08);
+  --canvas: #f7f6f3;
+  --surface: #ffffff;
+  --line: #e3e0d8;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: theme("colors.app-ink");
+  }
+
+  /* Tabular figures everywhere numbers are compared down a column. */
+  .nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Panel is the one surface primitive the demos share. */
+  .panel {
+    @apply rounded-xl border bg-[var(--surface)];
+    border-color: var(--line);
+  }
+}
+
+/*
+ * MOTION
+ *
+ * anime.js drives everything sequenced or data-derived (chart draw-ins, number
+ * ticks, staggered table rows). CSS keeps the always-on ambient bits below,
+ * which don't need a timeline and shouldn't cost a JS frame.
+ *
+ * Elements animated in by anime.js start hidden via [data-anim] so there's no
+ * flash of final state before the timeline runs. If JS never boots, the
+ * no-js-fallback rule at the bottom puts everything back.
+ */
+[data-anim="rise"],
+[data-anim="fade"] {
+  opacity: 0;
+}
+
+[data-anim="rise"] {
+  transform: translateY(12px);
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.skeleton::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.6),
+    transparent
+  );
+  animation: shimmer 1.4s infinite;
+}
+
+/* Live-ish pulse for "streaming" dots in the demo chrome. */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.pulse-ring::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  border-radius: 9999px;
+  background: currentColor;
+  animation: pulse-ring 2.4s var(--ease-out) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-anim] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+.no-js [data-anim] {
+  opacity: 1 !important;
+  transform: none !important;
+}

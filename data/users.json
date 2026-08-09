@@ -1,0 +1,37 @@
+{
+  "note": "Demo accounts. Passwords are published on tallkarol.com on purpose — these unlock read-only sample data and nothing else. No real person, customer, or client appears anywhere in this repo.",
+  "users": [
+    {
+      "id": "u_admin",
+      "email": "admin-demo@tallkarol.com",
+      "password": "demo",
+      "name": "Dana Whitfield",
+      "initials": "DW",
+      "access": {
+        "analytics": { "role": "owner", "title": "Owner" },
+        "portal": { "role": "admin", "title": "Lab administrator" }
+      }
+    },
+    {
+      "id": "u_analyst",
+      "email": "analyst-demo@tallkarol.com",
+      "password": "demo",
+      "name": "Priya Raman",
+      "initials": "PR",
+      "access": {
+        "analytics": { "role": "analyst", "title": "Marketing analyst" }
+      }
+    },
+    {
+      "id": "u_customer",
+      "email": "customer-demo@tallkarol.com",
+      "password": "demo",
+      "name": "Marcus Oyelaran",
+      "initials": "MO",
+      "customerId": "c_1042",
+      "access": {
+        "portal": { "role": "customer", "title": "Client" }
+      }
+    }
+  ]
+}
