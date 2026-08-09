@@ -3305,6 +3305,7 @@
       "name": "The Mariner Console 72\"",
       "category": "Audio",
       "price": 5680,
+      "image": "/products/mariner.jpg",
       "availability": "made-to-order",
       "leadTimeWeeks": 10,
       "units": 172,
@@ -3319,6 +3320,7 @@
       "name": "Modular Bookshelf System, 5-bay",
       "category": "Shelving",
       "price": 6240,
+      "image": "/products/modular.jpg",
       "availability": "made-to-order",
       "leadTimeWeeks": 12,
       "units": 123,
@@ -3333,6 +3335,7 @@
       "name": "The Mariner Console 60\"",
       "category": "Audio",
       "price": 4850,
+      "image": "/products/mariner.jpg",
       "availability": "made-to-order",
       "leadTimeWeeks": 10,
       "units": 151,
@@ -3347,6 +3350,7 @@
       "name": "Modular Bookshelf System, 3-bay",
       "category": "Shelving",
       "price": 3960,
+      "image": "/products/modular.jpg",
       "availability": "made-to-order",
       "leadTimeWeeks": 9,
       "units": 126,
@@ -3361,6 +3365,7 @@
       "name": "The Gallery Coffee Table",
       "category": "Tables",
       "price": 1780,
+      "image": "/products/gallery.jpg",
       "availability": "made-to-order",
       "leadTimeWeeks": 8,
       "units": 195,
@@ -3375,6 +3380,7 @@
       "name": "The Tailored End Table (pair)",
       "category": "Tables",
       "price": 1780,
+      "image": "/products/tailored.jpg",
       "availability": "made-to-order",
       "leadTimeWeeks": 7,
       "units": 172,
@@ -3389,6 +3395,7 @@
       "name": "Modular Bookshelf Add-on Bay",
       "category": "Shelving",
       "price": 1320,
+      "image": "/products/modular.jpg",
       "availability": "made-to-order",
       "leadTimeWeeks": 6,
       "units": 177,
@@ -3403,6 +3410,7 @@
       "name": "The Gallery Coffee Table, Petite",
       "category": "Tables",
       "price": 1490,
+      "image": "/products/gallery.jpg",
       "availability": "in-stock",
       "leadTimeWeeks": 0,
       "units": 150,
@@ -3417,6 +3425,7 @@
       "name": "The Tailored End Table",
       "category": "Tables",
       "price": 940,
+      "image": "/products/tailored.jpg",
       "availability": "in-stock",
       "leadTimeWeeks": 0,
       "units": 116,
@@ -3431,6 +3440,7 @@
       "name": "Mariner Record Drawer Module",
       "category": "Audio",
       "price": 720,
+      "image": "/products/mariner.jpg",
       "availability": "in-stock",
       "leadTimeWeeks": 0,
       "units": 57,
@@ -3978,6 +3988,7 @@
         "sku": "HP-GAL-311",
         "name": "The Gallery Coffee Table, Petite",
         "category": "Tables",
+        "image": "/products/gallery.jpg",
         "quantity": 1,
         "unitPrice": 1490,
         "options": [
@@ -4119,6 +4130,7 @@
         "sku": "HP-MOD-405",
         "name": "Modular Bookshelf System, 5-bay",
         "category": "Shelving",
+        "image": "/products/modular.jpg",
         "quantity": 1,
         "unitPrice": 6240,
         "options": [
@@ -4260,6 +4272,7 @@
         "sku": "HP-MOD-405",
         "name": "Modular Bookshelf System, 5-bay",
         "category": "Shelving",
+        "image": "/products/modular.jpg",
         "quantity": 1,
         "unitPrice": 6240,
         "options": [
@@ -4401,6 +4414,7 @@
         "sku": "HP-TAI-201",
         "name": "The Tailored End Table",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 940,
         "options": [
@@ -4538,6 +4552,7 @@
         "sku": "HP-MOD-405",
         "name": "Modular Bookshelf System, 5-bay",
         "category": "Shelving",
+        "image": "/products/modular.jpg",
         "quantity": 1,
         "unitPrice": 6240,
         "options": [
@@ -4679,6 +4694,7 @@
         "sku": "HP-GAL-311",
         "name": "The Gallery Coffee Table, Petite",
         "category": "Tables",
+        "image": "/products/gallery.jpg",
         "quantity": 1,
         "unitPrice": 1490,
         "options": [
@@ -4820,6 +4836,7 @@
         "sku": "HP-TAI-202",
         "name": "The Tailored End Table (pair)",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 1780,
         "options": [
@@ -4957,6 +4974,7 @@
         "sku": "HP-TAI-201",
         "name": "The Tailored End Table",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 940,
         "options": [
@@ -5104,6 +5122,7 @@
         "sku": "HP-MAR-DRW",
         "name": "Mariner Record Drawer Module",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 720,
         "options": [
@@ -5241,6 +5260,7 @@
         "sku": "HP-MOD-401",
         "name": "Modular Bookshelf Add-on Bay",
         "category": "Shelving",
+        "image": "/products/modular.jpg",
         "quantity": 1,
         "unitPrice": 1320,
         "options": [
@@ -5382,6 +5402,7 @@
         "sku": "HP-MAR-721",
         "name": "The Mariner Console 72\"",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 5680,
         "options": [
@@ -5523,6 +5544,7 @@
         "sku": "HP-TAI-202",
         "name": "The Tailored End Table (pair)",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 1780,
         "options": [
@@ -5664,6 +5686,7 @@
         "sku": "HP-TAI-202",
         "name": "The Tailored End Table (pair)",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 1780,
         "options": [
@@ -5801,6 +5824,7 @@
         "sku": "HP-MAR-721",
         "name": "The Mariner Console 72\"",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 5680,
         "options": [
@@ -5942,6 +5966,7 @@
         "sku": "HP-MAR-DRW",
         "name": "Mariner Record Drawer Module",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 720,
         "options": [
@@ -6079,6 +6104,7 @@
         "sku": "HP-MAR-601",
         "name": "The Mariner Console 60\"",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 4850,
         "options": [
@@ -6224,6 +6250,7 @@
         "sku": "HP-TAI-202",
         "name": "The Tailored End Table (pair)",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 1780,
         "options": [
@@ -6361,6 +6388,7 @@
         "sku": "HP-MAR-601",
         "name": "The Mariner Console 60\"",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 4850,
         "options": [
@@ -6502,6 +6530,7 @@
         "sku": "HP-GAL-311",
         "name": "The Gallery Coffee Table, Petite",
         "category": "Tables",
+        "image": "/products/gallery.jpg",
         "quantity": 1,
         "unitPrice": 1490,
         "options": [
@@ -6643,6 +6672,7 @@
         "sku": "HP-TAI-202",
         "name": "The Tailored End Table (pair)",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 1780,
         "options": [
@@ -6780,6 +6810,7 @@
         "sku": "HP-MAR-DRW",
         "name": "Mariner Record Drawer Module",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 720,
         "options": [
@@ -6917,6 +6948,7 @@
         "sku": "HP-TAI-201",
         "name": "The Tailored End Table",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 2,
         "unitPrice": 940,
         "options": [
@@ -7054,6 +7086,7 @@
         "sku": "HP-TAI-202",
         "name": "The Tailored End Table (pair)",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 1780,
         "options": [
@@ -7191,6 +7224,7 @@
         "sku": "HP-GAL-301",
         "name": "The Gallery Coffee Table",
         "category": "Tables",
+        "image": "/products/gallery.jpg",
         "quantity": 1,
         "unitPrice": 1780,
         "options": [
@@ -7332,6 +7366,7 @@
         "sku": "HP-MAR-601",
         "name": "The Mariner Console 60\"",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 4850,
         "options": [
@@ -7473,6 +7508,7 @@
         "sku": "HP-TAI-202",
         "name": "The Tailored End Table (pair)",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 1780,
         "options": [
@@ -7614,6 +7650,7 @@
         "sku": "HP-MAR-601",
         "name": "The Mariner Console 60\"",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 4850,
         "options": [
@@ -7755,6 +7792,7 @@
         "sku": "HP-MOD-403",
         "name": "Modular Bookshelf System, 3-bay",
         "category": "Shelving",
+        "image": "/products/modular.jpg",
         "quantity": 1,
         "unitPrice": 3960,
         "options": [
@@ -7896,6 +7934,7 @@
         "sku": "HP-GAL-311",
         "name": "The Gallery Coffee Table, Petite",
         "category": "Tables",
+        "image": "/products/gallery.jpg",
         "quantity": 1,
         "unitPrice": 1490,
         "options": [
@@ -8037,6 +8076,7 @@
         "sku": "HP-MAR-601",
         "name": "The Mariner Console 60\"",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 4850,
         "options": [
@@ -8178,6 +8218,7 @@
         "sku": "HP-MAR-DRW",
         "name": "Mariner Record Drawer Module",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 720,
         "options": [
@@ -8315,6 +8356,7 @@
         "sku": "HP-GAL-301",
         "name": "The Gallery Coffee Table",
         "category": "Tables",
+        "image": "/products/gallery.jpg",
         "quantity": 1,
         "unitPrice": 1780,
         "options": [
@@ -8456,6 +8498,7 @@
         "sku": "HP-GAL-311",
         "name": "The Gallery Coffee Table, Petite",
         "category": "Tables",
+        "image": "/products/gallery.jpg",
         "quantity": 1,
         "unitPrice": 1490,
         "options": [
@@ -8603,6 +8646,7 @@
         "sku": "HP-TAI-201",
         "name": "The Tailored End Table",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 940,
         "options": [
@@ -8740,6 +8784,7 @@
         "sku": "HP-GAL-311",
         "name": "The Gallery Coffee Table, Petite",
         "category": "Tables",
+        "image": "/products/gallery.jpg",
         "quantity": 1,
         "unitPrice": 1490,
         "options": [
@@ -8881,6 +8926,7 @@
         "sku": "HP-GAL-311",
         "name": "The Gallery Coffee Table, Petite",
         "category": "Tables",
+        "image": "/products/gallery.jpg",
         "quantity": 1,
         "unitPrice": 1490,
         "options": [
@@ -9022,6 +9068,7 @@
         "sku": "HP-MOD-401",
         "name": "Modular Bookshelf Add-on Bay",
         "category": "Shelving",
+        "image": "/products/modular.jpg",
         "quantity": 1,
         "unitPrice": 1320,
         "options": [
@@ -9163,6 +9210,7 @@
         "sku": "HP-MAR-721",
         "name": "The Mariner Console 72\"",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 5680,
         "options": [
@@ -9304,6 +9352,7 @@
         "sku": "HP-MAR-601",
         "name": "The Mariner Console 60\"",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 4850,
         "options": [
@@ -9445,6 +9494,7 @@
         "sku": "HP-MAR-DRW",
         "name": "Mariner Record Drawer Module",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 720,
         "options": [
@@ -9582,6 +9632,7 @@
         "sku": "HP-TAI-202",
         "name": "The Tailored End Table (pair)",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 1780,
         "options": [
@@ -9719,6 +9770,7 @@
         "sku": "HP-MAR-DRW",
         "name": "Mariner Record Drawer Module",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 720,
         "options": [
@@ -9856,6 +9908,7 @@
         "sku": "HP-MAR-721",
         "name": "The Mariner Console 72\"",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 5680,
         "options": [
@@ -9997,6 +10050,7 @@
         "sku": "HP-MAR-721",
         "name": "The Mariner Console 72\"",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 5680,
         "options": [
@@ -10138,6 +10192,7 @@
         "sku": "HP-TAI-201",
         "name": "The Tailored End Table",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 940,
         "options": [
@@ -10275,6 +10330,7 @@
         "sku": "HP-MOD-405",
         "name": "Modular Bookshelf System, 5-bay",
         "category": "Shelving",
+        "image": "/products/modular.jpg",
         "quantity": 1,
         "unitPrice": 6240,
         "options": [
@@ -10416,6 +10472,7 @@
         "sku": "HP-GAL-301",
         "name": "The Gallery Coffee Table",
         "category": "Tables",
+        "image": "/products/gallery.jpg",
         "quantity": 1,
         "unitPrice": 1780,
         "options": [
@@ -10557,6 +10614,7 @@
         "sku": "HP-MOD-405",
         "name": "Modular Bookshelf System, 5-bay",
         "category": "Shelving",
+        "image": "/products/modular.jpg",
         "quantity": 1,
         "unitPrice": 6240,
         "options": [
@@ -10698,6 +10756,7 @@
         "sku": "HP-MAR-721",
         "name": "The Mariner Console 72\"",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 5680,
         "options": [
@@ -10839,6 +10898,7 @@
         "sku": "HP-MOD-401",
         "name": "Modular Bookshelf Add-on Bay",
         "category": "Shelving",
+        "image": "/products/modular.jpg",
         "quantity": 1,
         "unitPrice": 1320,
         "options": [
@@ -10986,6 +11046,7 @@
         "sku": "HP-TAI-201",
         "name": "The Tailored End Table",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 940,
         "options": [
@@ -11123,6 +11184,7 @@
         "sku": "HP-MOD-405",
         "name": "Modular Bookshelf System, 5-bay",
         "category": "Shelving",
+        "image": "/products/modular.jpg",
         "quantity": 1,
         "unitPrice": 6240,
         "options": [
@@ -11264,6 +11326,7 @@
         "sku": "HP-MOD-401",
         "name": "Modular Bookshelf Add-on Bay",
         "category": "Shelving",
+        "image": "/products/modular.jpg",
         "quantity": 1,
         "unitPrice": 1320,
         "options": [
@@ -11405,6 +11468,7 @@
         "sku": "HP-GAL-311",
         "name": "The Gallery Coffee Table, Petite",
         "category": "Tables",
+        "image": "/products/gallery.jpg",
         "quantity": 1,
         "unitPrice": 1490,
         "options": [
@@ -11546,6 +11610,7 @@
         "sku": "HP-GAL-301",
         "name": "The Gallery Coffee Table",
         "category": "Tables",
+        "image": "/products/gallery.jpg",
         "quantity": 1,
         "unitPrice": 1780,
         "options": [
@@ -11687,6 +11752,7 @@
         "sku": "HP-TAI-202",
         "name": "The Tailored End Table (pair)",
         "category": "Tables",
+        "image": "/products/tailored.jpg",
         "quantity": 1,
         "unitPrice": 1780,
         "options": [
@@ -11824,6 +11890,7 @@
         "sku": "HP-MOD-405",
         "name": "Modular Bookshelf System, 5-bay",
         "category": "Shelving",
+        "image": "/products/modular.jpg",
         "quantity": 1,
         "unitPrice": 6240,
         "options": [
@@ -11965,6 +12032,7 @@
         "sku": "HP-MAR-601",
         "name": "The Mariner Console 60\"",
         "category": "Audio",
+        "image": "/products/mariner.jpg",
         "quantity": 1,
         "unitPrice": 4850,
         "options": [

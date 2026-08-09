@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { AlertTriangle, ArrowRight, PackageCheck, Truck } from "lucide-react"
 import { PageHeader } from "@/components/app/PageHeader"
 import { Stagger } from "@/components/motion/Stagger"
@@ -18,7 +19,23 @@ function OrderCard({ order }: { order: Order }) {
         className="panel group block p-5 transition hover:shadow-md"
       >
         <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="min-w-0">
+          {/* Fixed box, object-contain: the studio shots have different
+              aspect ratios, and a customer scanning three orders should see
+              three same-sized pieces, not three differently-cropped ones. */}
+          <div
+            className="relative hidden h-20 w-24 shrink-0 overflow-hidden rounded-lg bg-white sm:block"
+            style={{ border: "1px solid var(--line)" }}
+          >
+            <Image
+              src={order.item.image}
+              alt=""
+              fill
+              sizes="96px"
+              className="object-contain p-1.5"
+            />
+          </div>
+
+          <div className="min-w-0 flex-1">
             <p className="font-mono text-xs text-app-ink/50">{order.number}</p>
             <h2 className="mt-0.5 font-display text-lg font-semibold tracking-tight text-app-ink">
               {order.item.name}

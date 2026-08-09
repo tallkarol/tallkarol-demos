@@ -90,6 +90,20 @@ const FINISHES = ["Deep Walnut", "Natural Walnut", "Ebonised Oak"]
 const HARDWARE = ["Antique Brass", "Brushed Brass", "Blackened Brass"]
 const CANE = ["Natural Cane", "Smoked Cane"]
 
+/* One studio photo per product family; the size/module variants share it. */
+const PHOTOS = {
+  "HP-MAR-601": "/products/mariner.jpg",
+  "HP-MAR-721": "/products/mariner.jpg",
+  "HP-MAR-DRW": "/products/mariner.jpg",
+  "HP-GAL-301": "/products/gallery.jpg",
+  "HP-GAL-311": "/products/gallery.jpg",
+  "HP-TAI-201": "/products/tailored.jpg",
+  "HP-TAI-202": "/products/tailored.jpg",
+  "HP-MOD-403": "/products/modular.jpg",
+  "HP-MOD-405": "/products/modular.jpg",
+  "HP-MOD-401": "/products/modular.jpg",
+}
+
 const HAS_CANE = new Set(["HP-MAR-601", "HP-MAR-721", "HP-GAL-301", "HP-GAL-311", "HP-MOD-403", "HP-MOD-405", "HP-MOD-401"])
 
 function buildProducts() {
@@ -103,6 +117,7 @@ function buildProducts() {
       name,
       category,
       price,
+      image: PHOTOS[sku],
       availability,
       leadTimeWeeks: leadWeeks,
       units,
@@ -287,6 +302,7 @@ function buildOrders(products, customers) {
           sku: product.sku,
           name: product.name,
           category: product.category,
+          image: PHOTOS[product.sku],
           quantity,
           unitPrice: product.price,
           options,

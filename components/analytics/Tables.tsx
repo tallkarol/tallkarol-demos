@@ -1,5 +1,7 @@
 "use client"
 
+import Image from "next/image"
+
 import { DataTable, type Column } from "@/components/app/DataTable"
 import { SERIES } from "@/lib/chart-theme"
 import type { Campaign, Customer, Order, Product } from "@/lib/store"
@@ -226,9 +228,17 @@ export function ProductTable({
       header: "Product",
       sortValue: (p) => p.name,
       render: (p) => (
-        <div className="min-w-0">
-          <p className="truncate font-medium text-app-ink">{p.name}</p>
-          <p className="font-mono text-[11px] text-app-ink/50">{p.sku}</p>
+        <div className="flex min-w-0 items-center gap-3">
+          <span
+            className="relative hidden h-9 w-11 shrink-0 overflow-hidden rounded bg-white sm:block"
+            style={{ border: "1px solid var(--line)" }}
+          >
+            <Image src={p.image} alt="" fill sizes="44px" className="object-contain p-0.5" />
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate font-medium text-app-ink">{p.name}</span>
+            <span className="block font-mono text-[11px] text-app-ink/50">{p.sku}</span>
+          </span>
         </div>
       ),
     },

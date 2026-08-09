@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { notFound } from "next/navigation"
 import { AlertTriangle, ArrowLeft, Download, MapPin, Truck } from "lucide-react"
 import { OrderTimeline } from "@/components/portal/OrderTimeline"
@@ -82,6 +83,21 @@ export default async function OrderDetailPage({
         </section>
 
         <div className="space-y-6">
+          {/* The piece itself, before the logistics. Someone waiting eight
+              weeks on a made-to-order console opens this page to see it. */}
+          <section data-anim="rise" className="panel overflow-hidden">
+            <div className="relative aspect-[4/3] bg-white">
+              <Image
+                src={item.image}
+                alt={item.name}
+                fill
+                sizes="(max-width: 1024px) 100vw, 320px"
+                className="object-contain p-4"
+                priority
+              />
+            </div>
+          </section>
+
           <section data-anim="rise" className="panel p-5">
             <h2 className="mb-4 font-display text-base font-semibold text-app-ink">
               Delivery

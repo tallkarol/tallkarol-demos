@@ -44,6 +44,7 @@ export type Order = {
     sku: string
     name: string
     category: string
+    image: string
     quantity: number
     unitPrice: number
     /** Configured options — finish, cane, hardware. Order matters. */
@@ -88,6 +89,7 @@ export type Product = {
   name: string
   category: string
   price: number
+  image: string
   availability: "made-to-order" | "in-stock"
   leadTimeWeeks: number
   units: number
