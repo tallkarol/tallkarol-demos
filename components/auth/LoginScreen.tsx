@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { ArrowLeft } from "lucide-react"
 import { LoginForm, type DemoAccount } from "@/components/auth/LoginForm"
 import { Stagger } from "@/components/motion/Stagger"
@@ -39,6 +40,20 @@ export function LoginScreen({
         />
 
         <Stagger className="relative" gap={80}>
+          {/* On a saturated panel the crest needs its own light ground — the
+              mark's greens would otherwise sit inside the brand green. */}
+          <span
+            data-anim="rise"
+            className="mb-8 inline-grid place-items-center rounded-2xl bg-white/95 p-3 shadow-sm"
+          >
+            <Image
+              src="/harbor-pine-mark.png"
+              alt=""
+              width={42}
+              height={48}
+              className="h-12 w-auto"
+            />
+          </span>
           <p data-anim="fade" className="font-ui text-tk-eyebrow uppercase opacity-70">
             {brand.tagline}
           </p>
@@ -75,6 +90,13 @@ export function LoginScreen({
       <div className="flex items-center justify-center bg-[var(--canvas)] px-6 py-14">
         <Stagger className="w-full max-w-sm" gap={60}>
           <div data-anim="rise" className="lg:hidden">
+            <Image
+              src="/harbor-pine-mark.png"
+              alt=""
+              width={35}
+              height={40}
+              className="mb-3 h-10 w-auto"
+            />
             <p className="font-display text-2xl font-semibold tracking-tight text-app-ink">
               {brand.company}
             </p>

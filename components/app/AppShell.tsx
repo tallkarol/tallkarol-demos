@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import Image from "next/image"
 import { LogOut } from "lucide-react"
 import { DemoBar } from "@/components/chrome/DemoBar"
 import { AppNav, type NavItem } from "@/components/app/AppNav"
@@ -44,17 +45,17 @@ export function AppShell({
       <header className="sticky top-0 z-30 border-b bg-[var(--surface)]" style={{ borderColor: "var(--line)" }}>
         <div className="mx-auto flex h-14 max-w-[1600px] items-center gap-4 px-4 sm:px-6">
           <div className="flex items-center gap-2.5">
-            <span
-              className="grid h-7 w-7 place-items-center rounded-md font-display text-xs font-bold text-[var(--brand-ink)]"
-              style={{ background: "var(--brand)" }}
-            >
-              {brand.company
-                .split(/[\s&]+/)
-                .filter(Boolean)
-                .slice(0, 2)
-                .map((word) => word[0])
-                .join("")}
-            </span>
+            {/* The client's actual crest, not initials on a swatch. It's dark
+                green and navy, so it only ever sits on a light surface —
+                the topbar is var(--surface). */}
+            <Image
+              src="/harbor-pine-mark.png"
+              alt=""
+              width={26}
+              height={30}
+              priority
+              className="h-[30px] w-auto"
+            />
             <div className="leading-tight">
               <p className="font-display text-sm font-semibold text-app-ink">{brand.company}</p>
               <p className="text-[11px] text-app-ink/55">{brand.product}</p>
