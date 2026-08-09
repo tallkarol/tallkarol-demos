@@ -23,7 +23,7 @@ export default async function PortalLoginPage() {
         accounts={[
           {
             email: "customer-demo@tallkarol.com",
-            label: "Client",
+            label: "Customer",
             hint: "sees only their own orders",
           },
           {

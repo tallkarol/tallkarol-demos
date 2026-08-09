@@ -9,7 +9,7 @@
       "initials": "DW",
       "access": {
         "analytics": { "role": "owner", "title": "Owner" },
-        "portal": { "role": "admin", "title": "Lab administrator" }
+        "portal": { "role": "admin", "title": "Staff" }
       }
     },
     {
@@ -30,7 +30,7 @@
       "initials": "MO",
       "customerId": "c_1042",
       "access": {
-        "portal": { "role": "customer", "title": "Client" }
+        "portal": { "role": "customer", "title": "Customer" }
       }
     }
   ]
