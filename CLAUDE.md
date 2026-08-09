@@ -4,6 +4,11 @@ Two working demo applications, linked from tallkarol.com as proof of the
 "Web Apps & Custom Tools" service. Deployed separately from the marketing site
 (`demos.tallkarol.com`), so the rules here are **not** the rules in `dev/`.
 
+The index page also links out to a third demo that does not live in this repo:
+the Harbor & Pine WooCommerce storefront at `woodemo.tallkarol.com` (WP Engine;
+theme source in `~/Work/harbor-pine/theme/harbor-pine`). The index presents all
+three as one story — the store, its back office, its customers' view.
+
 ## What this is
 
 One fictional company, **Harbor & Pine** (mid-century-modern audiophile

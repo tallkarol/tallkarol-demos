@@ -1,13 +1,25 @@
 import Link from "next/link"
-import { ArrowRight, BarChart3, PackageSearch } from "lucide-react"
+import { ArrowRight, Armchair, BarChart3, PackageSearch } from "lucide-react"
 import { Stagger } from "@/components/motion/Stagger"
 
 const demos = [
   {
+    href: "https://woodemo.tallkarol.com",
+    external: true,
+    kind: "Storefront",
+    product: "Harbor & Pine — The store",
+    subject: "The WooCommerce storefront the other two demos orbit",
+    body: "The store itself: walnut, cane, and brass, commissioned in vanishingly small editions. Browse the collection, configure a piece, and put it in the cart. Checkout stays closed — the fiction never takes a card number.",
+    accent: "#B8860B",
+    glow: "rgba(184,134,11,0.22)",
+    Icon: Armchair,
+    access: "No login — the cart works, checkout is disabled.",
+  },
+  {
     href: "/analytics",
     kind: "Internal tool",
     product: "Harbor & Pine — Insights",
-    subject: "Store analytics for a WooCommerce furniture merchant",
+    subject: "Store analytics for the same WooCommerce merchant",
     body: "The reporting layer WooCommerce doesn't ship. Orders, customers, and campaign performance organised around the numbers that get decided on — with GA4 and Google Ads sitting next to store revenue.",
     accent: "#2E4A3D",
     glow: "rgba(46,74,61,0.20)",
@@ -48,29 +60,27 @@ export default function DemoIndexPage() {
             data-anim="rise"
             className="mt-5 font-display text-4xl font-semibold leading-tight tracking-tight sm:text-5xl"
           >
-            Two working applications.
+            One fictional company.
             <br />
-            Log in and use them.
+            Three working demos.
           </h1>
           <p data-anim="rise" className="mt-5 text-tk-linen/70">
-            Real screens, real interaction, invented data. Every account below is
-            read-only — nothing you click can change what the next visitor sees.
-            No signup, no email, no call.
+            The store, its back office, and its customers&apos; view — real
+            screens, real interaction, invented data. The storefront needs no
+            login, and every app account is read-only, so nothing you click can
+            change what the next visitor sees. No signup, no email, no call.
           </p>
         </Stagger>
 
         <Stagger
           as="ul"
-          className="mt-14 grid gap-6 lg:grid-cols-2"
+          className="mt-14 grid gap-6 lg:grid-cols-3"
           delay={220}
           gap={110}
         >
-          {demos.map(({ Icon, ...demo }) => (
-            <li key={demo.href} data-anim="rise">
-              <Link
-                href={demo.href}
-                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-tk-linen/15 bg-tk-linen/[0.04] p-7 transition-colors hover:border-tk-linen/35 hover:bg-tk-linen/[0.07]"
-              >
+          {demos.map(({ Icon, ...demo }) => {
+            const cardBody = (
+              <>
                 {/* Soft brand wash so each demo reads as its own product. */}
                 <div
                   aria-hidden
@@ -98,16 +108,20 @@ export default function DemoIndexPage() {
                   {demo.body}
                 </p>
 
-                <dl className="relative mt-6 space-y-2 border-t border-tk-linen/15 pt-5">
-                  {demo.logins.map((login) => (
+                <dl className="relative mt-6 flex-1 space-y-2 border-t border-tk-linen/15 pt-5">
+                  {demo.logins?.map((login) => (
                     <div key={login.email} className="flex flex-col gap-0.5">
                       <dt className="font-mono text-xs text-tk-linen">{login.email}</dt>
                       <dd className="text-xs text-tk-linen/55">{login.note}</dd>
                     </div>
                   ))}
-                  <p className="pt-1 font-mono text-xs text-tk-linen/55">
-                    password: demo
-                  </p>
+                  {demo.logins ? (
+                    <p className="pt-1 font-mono text-xs text-tk-linen/55">
+                      password: demo
+                    </p>
+                  ) : (
+                    <p className="font-mono text-xs text-tk-linen/55">{demo.access}</p>
+                  )}
                 </dl>
 
                 <span className="relative mt-6 inline-flex items-center gap-1.5 font-ui text-sm font-semibold">
@@ -117,16 +131,34 @@ export default function DemoIndexPage() {
                     aria-hidden="true"
                   />
                 </span>
-              </Link>
-            </li>
-          ))}
+              </>
+            )
+
+            const cardClass =
+              "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-tk-linen/15 bg-tk-linen/[0.04] p-7 transition-colors hover:border-tk-linen/35 hover:bg-tk-linen/[0.07]"
+
+            return (
+              <li key={demo.href} data-anim="rise">
+                {demo.external ? (
+                  <a href={demo.href} className={cardClass}>
+                    {cardBody}
+                  </a>
+                ) : (
+                  <Link href={demo.href} className={cardClass}>
+                    {cardBody}
+                  </Link>
+                )}
+              </li>
+            )
+          })}
         </Stagger>
 
         <p className="mt-12 max-w-2xl text-xs leading-relaxed text-tk-linen/45">
-          Harbor &amp; Pine is a fictional mid-century-modern furniture company. Both demos run on
-          one invented dataset — every customer, order, and product was made up
-          for it. No client of Tall Karol appears here, and no real data of any
-          kind is stored, transmitted, or displayed.
+          Harbor &amp; Pine is a fictional mid-century-modern furniture company —
+          one invented catalogue shared by the storefront and both apps. Every
+          customer, order, and product was made up for it. No client of Tall
+          Karol appears here, and no real data of any kind is stored,
+          transmitted, or displayed.
         </p>
       </div>
     </main>
