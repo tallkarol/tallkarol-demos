@@ -7,12 +7,15 @@ import { requireDemoUser, can } from "@/lib/auth"
 import { SERIES } from "@/lib/chart-theme"
 import { currency, compact, longDate } from "@/lib/utils"
 import { store, delta, total } from "@/lib/store"
+import { journeyFunnel } from "@/lib/journey/analytics"
+import { LiveJourneyPanel } from "@/components/analytics/LiveJourneyPanel"
 
 export const metadata = { title: "Overview — Harbor & Pine Insights" }
 
 export default async function AnalyticsOverviewPage() {
   const user = await requireDemoUser("analytics")
   const seesMargin = can(user, "analytics", "view:margin")
+  const funnel = await journeyFunnel()
 
   const daily = store.daily
   const revenue = daily.map((d) => d.revenue)
@@ -46,6 +49,7 @@ export default async function AnalyticsOverviewPage() {
             {store.meta.connectedSources.map((source) => (
               <SourceChip key={source.key}>{source.label}</SourceChip>
             ))}
+            <SourceChip>Live journeys</SourceChip>
           </div>
         }
       />
@@ -158,7 +162,13 @@ export default async function AnalyticsOverviewPage() {
           />
         </section>
 
-        <section data-anim="rise" className="panel p-5">
+        <section data-anim="rise">
+          <LiveJourneyPanel funnel={funnel} />
+        </section>
+      </Stagger>
+
+      <Stagger className="mt-6 grid gap-6 xl:grid-cols-3" delay={280} gap={90}>
+        <section data-anim="rise" className="panel p-5 xl:col-span-2">
           <h2 className="font-display text-base font-semibold text-app-ink">
             Top products
           </h2>
