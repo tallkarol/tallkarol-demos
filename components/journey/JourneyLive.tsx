@@ -106,22 +106,25 @@ export function JourneyLive({ initial }: { initial: RunPayload }) {
 
 
   return (
-    <div className="space-y-10">
-      {/* ------------------------------------------------------- identity */}
-      <header className="space-y-3">
-        <p className="font-mono text-sm text-tk-linen/55">{run.orderNumber}</p>
-        <h1 className="font-display text-3xl font-semibold tracking-tight text-tk-linen sm:text-4xl">
-          {run.order.item.name}
-        </h1>
-      </header>
+    <div className="space-y-8">
+      {/* Identity and next action share a row from md up — the banner is the
+          tallest thing on the page and parking it beside the title instead of
+          under it buys the diagram most of a fold. */}
+      <div className="grid items-start gap-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] md:gap-8">
+        <header className="space-y-1.5">
+          <p className="font-mono text-sm text-tk-linen/55">{run.orderNumber}</p>
+          <h1 className="font-display text-3xl font-semibold leading-tight tracking-tight text-tk-linen sm:text-4xl">
+            {run.order.item.name}
+          </h1>
+        </header>
 
-      {/* --------------------------------------------------- next action */}
-      <NextAction
-        run={run}
-        delivered={delivered}
-        loopClosed={loopClosed}
-        stageTotal={stageTotal}
-      />
+        <NextAction
+          run={run}
+          delivered={delivered}
+          loopClosed={loopClosed}
+          stageTotal={stageTotal}
+        />
+      </div>
 
       {/* ------------------------------- the show, with its run console */}
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_23rem]">
