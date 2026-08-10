@@ -28,11 +28,13 @@ in a customer's order are the same number.
 
 ## Non-negotiables
 
-- **Read-only, always.** Every capability in `lib/auth.ts` is a read. The demo
-  credentials are published on tallkarol.com, so nothing a visitor clicks may
-  change what the next visitor sees. Don't add a write path, a form that
-  persists, or a destructive action — the permission model deliberately has no
-  destructive verbs to grant.
+- **The published accounts' world is read-only, always.** The three demo
+  accounts in `data/users.json` see the immutable seeded dataset; nothing any
+  visitor does may change what they show. The ONE sanctioned write path is the
+  live journey (`lib/journey/`), and it writes only into the visitor's own
+  namespaced run (journey_runs / journey_events in Neon) — a journey user sees
+  exactly one order, their own, and the seeded world never changes. Don't add
+  any other write path, and no destructive verbs anywhere.
 - **No real data, ever.** Every customer, order, product, address, and campaign
   is invented. No client of Tall Karol appears here.
 - **Data is generated, then committed.** `node scripts/generate-data.mjs`
@@ -84,6 +86,33 @@ all pass on a white surface. Rules that follow from that:
 - Brand tokens are per-demo CSS vars in `lib/brands.ts`, applied on each app
   shell's root. Components read `var(--brand)`, `var(--surface)`, `var(--line)`
   — never hardcode a brand colour in a component.
+
+## Live journey (`/journey`)
+
+One fictional purchase runs the real machine: Woo REST order into woodemo,
+Resend email (sender renders as `Harbor & Pine <RESEND_FROM_EMAIL>`), in-house
+click tracking (`/api/t`), simulated SMS, CRM-shaped events, portal account
+(their email / `demo`), eight stages on a compressed clock.
+
+- **State**: Neon Postgres (`DATABASE_URL`). Schema in
+  `scripts/journey-schema.sql`; apply with the node one-liner in git history or
+  any SQL client. Events are append-only.
+- **Advancement is lazy** — every read (`/api/journey/state`, the portal
+  bridge) advances due stages; there is no per-minute cron. The daily Vercel
+  cron (`vercel.json` → `/api/journey/gc`, `CRON_SECRET` auth) only deletes
+  runs older than 7 days, Woo orders included — that's the privacy promise on
+  the form.
+- **Anti-abuse**: honeypot + min-time on the form; 3 runs/email/day,
+  5/IP/day, 100/day global in `createRun`; first email doubles as
+  verification (no click → nothing else ever sends); `verify_token` gates all
+  event writes; run ids are unguessable capabilities.
+- **Env**: RESEND_API_KEY, RESEND_FROM_EMAIL, WOO_BASE_URL, WOO_CONSUMER_KEY,
+  WOO_CONSUMER_SECRET, WOO_WEBHOOK_SECRET are team-level SENSITIVE shared vars
+  — values are unreadable by design; manage them by linking/unlinking the
+  project in the dashboard, never by `vercel env pull` (they pull as empty).
+  Woo/Resend failures degrade to `*.error` events; the journey keeps moving.
+- The Woo webhook (order updated → `/api/journey/hook/woo`) verifies
+  HMAC-SHA256; Woo's unsigned activation ping gets a 200.
 
 ## Deploy
 

@@ -6,7 +6,8 @@ import { Stagger } from "@/components/motion/Stagger"
 import { StageBar } from "@/components/portal/StageBar"
 import { AdminOrderTable } from "@/components/portal/AdminOrderTable"
 import { requireDemoUser } from "@/lib/auth"
-import { store, ordersForCustomer, type Order } from "@/lib/store"
+import { store, type Order } from "@/lib/store"
+import { portalOrders } from "@/lib/journey/portalBridge"
 import { currency, longDate } from "@/lib/utils"
 
 export const metadata = { title: "My orders — Harbor & Pine" }
@@ -114,7 +115,7 @@ export default async function PortalHomePage() {
     )
   }
 
-  const orders = ordersForCustomer(user.customerId ?? "")
+  const orders = await portalOrders(user)
   const active = orders.filter((order) => !order.isComplete)
   const past = orders.filter((order) => order.isComplete)
 

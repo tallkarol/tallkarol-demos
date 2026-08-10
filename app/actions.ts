@@ -10,7 +10,7 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
   const password = String(formData.get("password") ?? "")
   const demo = String(formData.get("demo") ?? "") as DemoKey
 
-  const user = authenticate(email, password)
+  const user = await authenticate(email, password)
   if (!user) {
     return { error: "That email and password don't match a demo account." }
   }

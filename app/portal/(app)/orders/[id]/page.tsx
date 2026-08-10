@@ -6,6 +6,7 @@ import { OrderTimeline } from "@/components/portal/OrderTimeline"
 import { Stagger } from "@/components/motion/Stagger"
 import { requireDemoUser } from "@/lib/auth"
 import { findOrder } from "@/lib/store"
+import { portalOrder } from "@/lib/journey/portalBridge"
 import { currency, longDate } from "@/lib/utils"
 
 export default async function OrderDetailPage({
@@ -15,12 +16,13 @@ export default async function OrderDetailPage({
 }) {
   const { id } = await params
   const user = await requireDemoUser("portal")
-  const order = findOrder(id)
+  const isAdminUser = user.demoRole.role === "admin"
+  const order = isAdminUser ? findOrder(id) : await portalOrder(user, id)
 
   // The permission check that matters: a customer can only ever open their own
   // order. Not hidden in the UI — enforced on the server, and a mismatch is a
   // 404 rather than a "forbidden" that confirms the order exists.
-  const isAdmin = user.demoRole.role === "admin"
+  const isAdmin = isAdminUser
   if (!order || (!isAdmin && order.customerId !== user.customerId)) notFound()
 
   const { item, totals, delivery } = order

@@ -1,17 +1,23 @@
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import usersFile from "@/data/users.json"
+import { getRun, latestRunByEmail, type JourneyRun } from "@/lib/journey/runs"
+import { initialsOf } from "@/lib/journey/ladder"
 
 /**
  * Auth for the demos — deliberately the smallest thing that can honestly show
- * a roles model. The user list is a JSON file, the session is a cookie holding
- * a user id, and nothing in the app writes anywhere. There is no database, no
- * password hashing, and no account recovery, because there are no accounts:
- * three fixed identities whose credentials are published on tallkarol.com.
+ * a roles model. Two kinds of identity:
  *
- * Every capability below is a *read*. That's the point — a demo anyone can log
- * into must not be able to destroy the thing the next visitor sees, so the
- * permission model has no destructive verbs to grant in the first place.
+ *  - The three published demo accounts, from data/users.json. Their world is
+ *    the immutable seeded dataset; nothing a visitor does ever changes what
+ *    they see.
+ *  - Journey users: anyone who starts a live journey. Email + password `demo`
+ *    signs them into the portal scoped to exactly one order — their own run.
+ *    Session cookie carries `jr:<run_id>`.
+ *
+ * Every capability in both worlds is a read. The journey WRITES live in the
+ * journey tables and only ever into the visitor's own namespaced run — the
+ * published accounts' world stays frozen.
  */
 
 export type DemoKey = "analytics" | "portal"
@@ -28,10 +34,8 @@ export type Capability =
   | "view:own"
 
 const CAPABILITIES: Record<Role, Capability[]> = {
-  // Harbor & Pine — store analytics
   owner: ["view:revenue", "view:margin", "view:adspend", "view:settings", "export"],
   analyst: ["view:revenue", "view:adspend"],
-  // TraceWell Labs — client portal
   admin: ["view:all-clients", "view:audit", "export"],
   customer: ["view:own"],
 }
@@ -49,42 +53,81 @@ export type DemoUser = {
 
 type StoredUser = DemoUser & { password: string }
 
-const SESSION_COOKIE = "tk_demo_session"
+export const SESSION_COOKIE = "tk_demo_session"
+
+export function sessionCookieOptions() {
+  return {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 8,
+  }
+}
 
 const users = usersFile.users as StoredUser[]
 
 /** Strips the password so a user object can safely cross into a client component. */
 const publicUser = ({ password: _password, ...rest }: StoredUser): DemoUser => rest
 
+function journeyUser(run: JourneyRun): DemoUser {
+  const name = run.order_json.customerName
+  return {
+    id: `jr:${run.id}`,
+    email: run.email,
+    name,
+    initials: initialsOf(name),
+    customerId: `jr:${run.id}`,
+    access: { portal: { role: "customer", title: "Customer" } },
+  }
+}
+
 export function findByEmail(email: string): StoredUser | null {
   const normalized = email.trim().toLowerCase()
   return users.find((u) => u.email.toLowerCase() === normalized) ?? null
 }
 
-/** Constant-time comparison isn't warranted here — the passwords are published. */
-export function authenticate(email: string, password: string): DemoUser | null {
+/**
+ * Constant-time comparison isn't warranted here — the demo passwords are
+ * published. Journey lookup only happens on a JSON miss, and only when the
+ * password is the published one, so the DB never sees a credentials probe.
+ */
+export async function authenticate(email: string, password: string): Promise<DemoUser | null> {
   const user = findByEmail(email)
-  if (!user || user.password !== password.trim()) return null
-  return publicUser(user)
+  if (user) return user.password === password.trim() ? publicUser(user) : null
+
+  if (password.trim() === "demo") {
+    try {
+      const run = await latestRunByEmail(email)
+      if (run) return journeyUser(run)
+    } catch {
+      // DB down → journey logins fail, seeded accounts keep working.
+    }
+  }
+  return null
 }
 
 export async function getSessionUser(): Promise<DemoUser | null> {
   const store = await cookies()
-  const id = store.get(SESSION_COOKIE)?.value
-  if (!id) return null
-  const user = users.find((u) => u.id === id)
+  const value = store.get(SESSION_COOKIE)?.value
+  if (!value) return null
+
+  if (value.startsWith("jr:")) {
+    try {
+      const run = await getRun(value.slice(3))
+      return run ? journeyUser(run) : null
+    } catch {
+      return null
+    }
+  }
+
+  const user = users.find((u) => u.id === value)
   return user ? publicUser(user) : null
 }
 
 export async function startSession(userId: string) {
   const store = await cookies()
-  store.set(SESSION_COOKIE, userId, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 8,
-  })
+  store.set(SESSION_COOKIE, userId, sessionCookieOptions())
 }
 
 export async function endSession() {
