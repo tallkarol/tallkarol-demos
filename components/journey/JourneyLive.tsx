@@ -1,17 +1,19 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useMemo, useState } from "react"
-import {
-  ArrowUpRight,
-  BarChart3,
-  CheckCircle2,
-  Contact2,
-  Inbox,
-  MessageSquare,
-  Store,
-} from "lucide-react"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { ArrowUpRight, Check, Inbox, Loader2, PartyPopper } from "lucide-react"
+import { LiveDiagram, type LaneKey } from "@/components/journey/LiveDiagram"
 import type { Order } from "@/lib/store"
+
+type JourneyEvent = {
+  id: number
+  type: string
+  lane: string | null
+  detail: Record<string, unknown> | null
+  utm: Record<string, string> | null
+  created_at: string | Date
+}
 
 type RunPayload = {
   run: {
@@ -24,226 +26,397 @@ type RunPayload = {
     order: Order
     createdAt: string
   }
-  events: {
-    id: number
-    type: string
-    lane: string | null
-    detail: Record<string, unknown> | null
-    utm: Record<string, string> | null
-    created_at: string | Date
-  }[]
+  events: JourneyEvent[]
 }
 
 const POLL_MS = 2500
+const LANES: LaneKey[] = ["store", "router", "email", "sms", "crm", "portal", "analytics"]
 
 /**
- * The live run page: the wiring diagram, running. Each lane panel renders its
- * slice of the event ledger; the ledger itself scrolls at the bottom like a
- * tail -f. Polling advances the journey server-side, so keeping this page
- * open IS what makes time pass.
+ * The live run: one clear next action, the wiring diagram doing the work, and
+ * every technical layer one click away underneath.
+ *
+ * The page answers "what do I do now?" before it answers anything else —
+ * that's the step rail and the banner. The diagram is the show. The lane
+ * detail and the raw ledger are progressive disclosure, because a visitor who
+ * wants to inspect the plumbing should be able to, and one who doesn't
+ * shouldn't have to look at it.
  */
 export function JourneyLive({ initial }: { initial: RunPayload }) {
   const [data, setData] = useState<RunPayload>(initial)
+  const [selected, setSelected] = useState<LaneKey | null>(null)
+  const lastCount = useRef(initial.events.length)
+  const [newestLane, setNewestLane] = useState<LaneKey | null>(null)
 
-  const loopClosed = useMemo(
-    () => data.events.some((e) => e.type === "loop.closed"),
-    [data.events]
-  )
+  const { run, events } = data
+  const loopClosed = useMemo(() => events.some((e) => e.type === "loop.closed"), [events])
+
+  /* Newest-first human lines per lane, for the diagram's in-node feed. */
+  const recent = useMemo(() => {
+    const base = Object.fromEntries(LANES.map((l) => [l, [] as string[]])) as Record<
+      LaneKey,
+      string[]
+    >
+    for (let i = events.length - 1; i >= 0; i--) {
+      const event = events[i]
+      const lane = event.lane as LaneKey | null
+      if (!lane || !(lane in base) || base[lane].length >= 2) continue
+      base[lane].push(summarize(event) || event.type)
+    }
+    return base
+  }, [events])
+
+  const counts = useMemo(() => {
+    const base = Object.fromEntries(LANES.map((l) => [l, 0])) as Record<LaneKey, number>
+    for (const event of events) {
+      if (event.lane && event.lane in base) base[event.lane as LaneKey] += 1
+    }
+    return base
+  }, [events])
 
   useEffect(() => {
-    if (data.run.status === "complete" && loopClosed) return
+    if (run.status === "complete" && loopClosed) return
     const id = window.setInterval(async () => {
       try {
-        const res = await fetch(`/api/journey/state/${data.run.id}`, { cache: "no-store" })
+        const res = await fetch(`/api/journey/state/${run.id}`, { cache: "no-store" })
         if (res.ok) setData((await res.json()) as RunPayload)
       } catch {
         /* next tick retries */
       }
     }, POLL_MS)
     return () => window.clearInterval(id)
-  }, [data.run.id, data.run.status, loopClosed])
+  }, [run.id, run.status, loopClosed])
 
-  const { run, events } = data
-  const lane = (name: string) => events.filter((e) => e.lane === name)
+  /* Which lane just moved — drives the diagram's flash. */
+  useEffect(() => {
+    if (events.length <= lastCount.current) return
+    lastCount.current = events.length
+    const newest = events[events.length - 1]
+    if (newest?.lane && LANES.includes(newest.lane as LaneKey)) {
+      setNewestLane(newest.lane as LaneKey)
+    }
+  }, [events])
+
   const stageTotal = run.order.timeline.length
+  const delivered = run.stageIndex >= stageTotal - 1
+
+  const steps = [
+    { n: 1, label: "Order placed", done: true, active: false },
+    {
+      n: 2,
+      label: "Confirm from your inbox",
+      done: run.status !== "awaiting_click",
+      active: run.status === "awaiting_click",
+    },
+    {
+      n: 3,
+      label: "Watch it build & ship",
+      done: delivered,
+      active: run.status === "active" && !delivered,
+    },
+    {
+      n: 4,
+      label: "Close the loop",
+      done: loopClosed,
+      active: delivered && !loopClosed,
+    },
+  ]
 
   return (
-    <div className="space-y-8">
-      {/* ------------------------------------------------------ header */}
-      <header className="space-y-4">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <p className="font-mono text-sm text-tk-linen/60">{run.orderNumber}</p>
-          <span
-            className={`rounded-full px-3 py-1 font-ui text-xs font-semibold ${
-              run.status === "complete"
-                ? "bg-lh-green/15 text-lh-green"
-                : run.status === "active"
-                  ? "bg-tk-teal/20 text-tk-linen"
-                  : "bg-tk-linen/10 text-tk-linen/80"
-            }`}
-          >
-            {run.status === "awaiting_click"
-              ? "Waiting on your inbox"
-              : run.status === "active"
-                ? `Live — ${run.order.status}`
-                : loopClosed
-                  ? "Complete — loop closed"
-                  : "Delivered"}
-          </span>
-        </div>
+    <div className="space-y-10">
+      {/* ------------------------------------------------------- identity */}
+      <header className="space-y-3">
+        <p className="font-mono text-sm text-tk-linen/55">{run.orderNumber}</p>
         <h1 className="font-display text-3xl font-semibold tracking-tight text-tk-linen sm:text-4xl">
           {run.order.item.name}
         </h1>
-
-        {/* stage segments */}
-        <div className="flex max-w-xl gap-1" aria-hidden="true">
-          {run.order.timeline.map((step, index) => (
-            <div
-              key={step.key}
-              className={`h-1.5 flex-1 rounded-full transition-colors duration-700 ${
-                index <= run.stageIndex ? "bg-tk-teal" : "bg-tk-linen/15"
-              }`}
-            />
-          ))}
-        </div>
-        <p className="text-sm text-tk-linen/70">
-          Stage <span className="nums font-semibold text-tk-linen">{run.stageIndex + 1}</span> of{" "}
-          {stageTotal} — {run.order.status}. Eight weeks of made-to-order furniture,
-          compressed to about a minute per stage, while you watch.
-        </p>
       </header>
 
-      {run.status === "awaiting_click" && (
-        <div className="flex items-start gap-3 rounded-xl border border-tk-teal/40 bg-tk-teal/10 p-4">
-          <Inbox className="mt-0.5 h-5 w-5 shrink-0 text-tk-linen" aria-hidden="true" />
-          <div className="text-sm text-tk-linen/85">
-            <p className="font-semibold text-tk-linen">
-              Check <span className="font-mono">{run.email}</span> — nothing moves until you click.
-            </p>
-            <p className="mt-1 text-tk-linen/65">
-              The first email doubles as verification. No click, no more email — that&apos;s the
-              anti-spam design, visible from the inside. (Look in spam if it&apos;s shy.)
-            </p>
-          </div>
-        </div>
-      )}
+      {/* ---------------------------------------------------- step rail */}
+      <ol className="flex flex-wrap gap-x-3 gap-y-2">
+        {steps.map((step) => (
+          <li
+            key={step.n}
+            className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs transition ${
+              step.active
+                ? "border-tk-teal bg-tk-teal/15 text-tk-linen"
+                : step.done
+                  ? "border-lh-green/40 bg-lh-green/10 text-tk-linen/85"
+                  : "border-tk-linen/15 text-tk-linen/45"
+            }`}
+          >
+            <span
+              className={`grid h-4 w-4 place-items-center rounded-full text-[10px] font-bold ${
+                step.done ? "bg-lh-green text-tk-onyx" : step.active ? "bg-tk-teal text-tk-linen" : "bg-tk-linen/15"
+              }`}
+              aria-hidden="true"
+            >
+              {step.done ? <Check className="h-2.5 w-2.5" /> : step.n}
+            </span>
+            <span className="font-ui font-medium">{step.label}</span>
+            {step.done && <span className="sr-only">— done</span>}
+          </li>
+        ))}
+      </ol>
 
-      {loopClosed && (
-        <div className="flex items-start gap-3 rounded-xl border border-lh-green/40 bg-lh-green/10 p-4">
-          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-lh-green" aria-hidden="true" />
-          <p className="text-sm text-tk-linen/85">
-            <span className="font-semibold text-tk-linen">Loop closed.</span> coupon.redeemed →
-            order.created — the green wire on the diagram, and you just ran it with a real click.
+      {/* --------------------------------------------------- next action */}
+      <NextAction
+        run={run}
+        delivered={delivered}
+        loopClosed={loopClosed}
+        stageTotal={stageTotal}
+      />
+
+      {/* ------------------------------------------------------ the show */}
+      <section className="space-y-3">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="font-display text-lg font-semibold text-tk-linen">
+            Your journey, on the wire
+          </h2>
+          <p className="text-xs text-tk-linen/50">
+            The same diagram from tallkarol.com — lit by your run. Tap any box to look inside.
           </p>
         </div>
-      )}
+        <div className="overflow-x-auto rounded-2xl border border-tk-linen/12 bg-black/25 p-3 sm:p-5">
+          <LiveDiagram
+            counts={counts}
+            recent={recent}
+            selected={selected}
+            onSelect={(lane) => setSelected((current) => (current === lane ? null : lane))}
+            loopClosed={loopClosed}
+            newestLane={newestLane}
+          />
+        </div>
+      </section>
 
-      {/* ------------------------------------------------------- lanes */}
-      <div className="grid gap-4 lg:grid-cols-2">
-        <LanePanel icon={<Inbox className="h-4 w-4" aria-hidden="true" />} title="Email — Resend">
-          {lane("email").length === 0 && <Empty>First send fires the moment the run starts.</Empty>}
-          <ul className="space-y-2">
-            {lane("email").map((e) => (
-              <li key={e.id} className="text-sm text-tk-linen/80">
-                {e.type === "email.sent" && (
-                  <>
-                    <span className="text-tk-teal">sent</span>{" "}
-                    {String(e.detail?.subject ?? e.detail?.template ?? "email")}
-                  </>
-                )}
-                {e.type === "email.link.clicked" && (
-                  <>
-                    <span className="text-lh-green">clicked</span> — verified, UTM captured{" "}
-                    <span className="font-mono text-xs text-tk-linen/55">
-                      {e.utm?.utm_campaign}
-                    </span>
-                  </>
-                )}
-                {e.type === "coupon.redeemed" && (
-                  <>
-                    <span className="text-lh-green">coupon</span> PINE10 redeemed
-                  </>
-                )}
-                {e.type === "email.error" && (
-                  <span className="text-red-300">send failed — {String(e.detail?.error ?? "")}</span>
-                )}
+      {/* --------------------------------------------------- lane detail */}
+      <LaneDetail
+        lane={selected}
+        events={events}
+        run={run}
+        onClose={() => setSelected(null)}
+      />
+
+      {/* -------------------------------------------------- raw ledger */}
+      <details className="group rounded-xl border border-tk-linen/12 bg-black/25">
+        <summary className="cursor-pointer list-none px-4 py-3 font-ui text-xs font-semibold uppercase tracking-[0.14em] text-tk-linen/55 transition hover:text-tk-linen">
+          Raw event ledger — {events.length} rows
+          <span className="ml-2 font-normal normal-case tracking-normal text-tk-linen/40 group-open:hidden">
+            (every row your run wrote to Postgres)
+          </span>
+        </summary>
+        <ol className="max-h-72 overflow-y-auto border-t border-tk-linen/10 px-4 py-3 font-mono text-xs leading-6 text-tk-linen/70">
+          {events
+            .slice()
+            .reverse()
+            .map((e) => (
+              <li key={e.id} className="truncate">
+                <span className="text-tk-linen/40">
+                  {new Date(e.created_at).toISOString().slice(11, 19)}
+                </span>{" "}
+                <span className="text-tk-teal">{(e.lane ?? "-").padEnd(9, " ")}</span>
+                {e.type}
               </li>
             ))}
-          </ul>
-        </LanePanel>
+        </ol>
+      </details>
+    </div>
+  )
+}
 
-        <LanePanel
-          icon={<MessageSquare className="h-4 w-4" aria-hidden="true" />}
-          title="SMS — delivery line"
-          note="simulated — a real gateway sits behind a flag"
+/* -------------------------------------------------------------- next step */
+
+function NextAction({
+  run,
+  delivered,
+  loopClosed,
+  stageTotal,
+}: {
+  run: RunPayload["run"]
+  delivered: boolean
+  loopClosed: boolean
+  stageTotal: number
+}) {
+  if (run.status === "awaiting_click") {
+    return (
+      <Banner tone="teal" icon={<Inbox className="h-5 w-5" aria-hidden="true" />}>
+        <p className="font-display text-lg font-semibold text-tk-linen">
+          Step 2 — open your inbox and click the button
+        </p>
+        <p className="mt-1 text-sm text-tk-linen/75">
+          An email is sitting in <span className="font-mono">{run.email}</span> right now.
+          Nothing else happens until you click it — that&apos;s the anti-spam design,
+          seen from the inside. (Check spam if it&apos;s shy.)
+        </p>
+      </Banner>
+    )
+  }
+
+  if (!delivered) {
+    return (
+      <Banner tone="teal" icon={<Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />}>
+        <p className="font-display text-lg font-semibold text-tk-linen">
+          Step 3 — it&apos;s running. Just watch.
+        </p>
+        <p className="mt-1 text-sm text-tk-linen/75">
+          Stage <span className="nums font-semibold text-tk-linen">{run.stageIndex + 1}</span> of{" "}
+          {stageTotal} — <span className="text-tk-linen">{run.order.status}</span>. A new stage
+          lands about every minute; eight weeks of made-to-order furniture, compressed. Texts
+          start when freight is booked.
+        </p>
+      </Banner>
+    )
+  }
+
+  if (!loopClosed) {
+    return (
+      <Banner tone="teal" icon={<Inbox className="h-5 w-5" aria-hidden="true" />}>
+        <p className="font-display text-lg font-semibold text-tk-linen">
+          Step 4 — one more email, one more click
+        </p>
+        <p className="mt-1 text-sm text-tk-linen/75">
+          It&apos;s delivered. A second email just went to{" "}
+          <span className="font-mono">{run.email}</span> with coupon <strong>PINE10</strong> —
+          clicking it fires <span className="font-mono text-xs">coupon.redeemed</span> and closes
+          the green loop on the diagram.
+        </p>
+      </Banner>
+    )
+  }
+
+  return (
+    <Banner tone="green" icon={<PartyPopper className="h-5 w-5" aria-hidden="true" />}>
+      <p className="font-display text-lg font-semibold text-tk-linen">
+        You ran the whole system.
+      </p>
+      <p className="mt-1 text-sm text-tk-linen/75">
+        Order created in a real WooCommerce store, two designed emails sent and clicked,
+        attribution captured, eight fulfilment stages written to a portal you can log into, and
+        the repeat-order loop closed. That&apos;s the pitch — you just did it instead of reading it.
+      </p>
+      <div className="mt-4 flex flex-wrap gap-3">
+        <Link
+          href="/portal"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-tk-linen px-4 py-2 font-ui text-sm font-semibold text-tk-onyx transition hover:bg-white"
         >
-          {lane("sms").length === 0 && <Empty>Texts start when freight is booked.</Empty>}
-          <ul className="space-y-2">
-            {lane("sms").map((e) => (
-              <li
-                key={e.id}
-                className="max-w-[95%] rounded-2xl rounded-tl-sm bg-tk-linen/10 px-3.5 py-2 text-sm leading-relaxed text-tk-linen/85"
-              >
-                {String(e.detail?.body ?? "")}
-              </li>
-            ))}
-          </ul>
-        </LanePanel>
-
-        <LanePanel
-          icon={<Contact2 className="h-4 w-4" aria-hidden="true" />}
-          title="Harbor & Pine CRM"
+          Open your order
+          <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+        </Link>
+        <a
+          href="https://www.tallkarol.com/services/systems-integration"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-tk-linen/25 px-4 py-2 font-ui text-sm font-semibold text-tk-linen transition hover:border-tk-linen/50"
         >
-          {lane("crm").length === 0 && <Empty>Contact upserts on verification.</Empty>}
-          <ul className="space-y-1.5">
-            {lane("crm").map((e) => (
-              <li key={e.id} className="flex gap-2 text-sm text-tk-linen/80">
-                <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-tk-teal/70" />
-                <span>
-                  {e.type === "crm.contact.upserted" && `Contact upserted — ${String(e.detail?.contact ?? "")}`}
-                  {e.type === "crm.timeline.appended" && String(e.detail?.entry ?? "")}
-                  {e.type === "crm.task.created" && `Task: ${String(e.detail?.task ?? "")}`}
-                  {e.type === "crm.tag.applied" && `Tags: ${(e.detail?.tags as string[] | undefined)?.join(", ")}`}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </LanePanel>
+          Have one built for your store
+          <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+        </a>
+      </div>
+    </Banner>
+  )
+}
 
-        <LanePanel icon={<Store className="h-4 w-4" aria-hidden="true" />} title="WooCommerce — woodemo">
-          {lane("store").length === 0 && <Empty>The order lands in wp-admin as the run starts.</Empty>}
-          <ul className="space-y-1.5">
-            {lane("store").map((e) => (
-              <li key={e.id} className="text-sm text-tk-linen/80">
-                {e.type === "woo.order.created" && (
-                  <>
-                    Order <span className="font-mono text-xs">#{String(e.detail?.wooOrderId)}</span>{" "}
-                    created — a real row in the store&apos;s admin
-                  </>
-                )}
-                {e.type === "woo.status.updated" && `Status → ${String(e.detail?.status)}`}
-                {e.type === "woo.webhook.received" && (
-                  <span className="text-tk-teal">
-                    webhook back — signature verified, the system hears itself
-                  </span>
-                )}
-                {e.type === "woo.error" && (
-                  <span className="text-red-300">Woo unavailable — journey continues without it</span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </LanePanel>
+function Banner({
+  tone,
+  icon,
+  children,
+}: {
+  tone: "teal" | "green"
+  icon: React.ReactNode
+  children: React.ReactNode
+}) {
+  return (
+    <div
+      className={`flex items-start gap-4 rounded-2xl border p-5 ${
+        tone === "green" ? "border-lh-green/40 bg-lh-green/10" : "border-tk-teal/45 bg-tk-teal/10"
+      }`}
+    >
+      <span
+        className={`mt-0.5 shrink-0 ${tone === "green" ? "text-lh-green" : "text-tk-linen"}`}
+      >
+        {icon}
+      </span>
+      <div className="min-w-0">{children}</div>
+    </div>
+  )
+}
 
-        <LanePanel
-          icon={<ArrowUpRight className="h-4 w-4" aria-hidden="true" />}
-          title="Customer portal"
+/* ------------------------------------------------------------ lane detail */
+
+const LANE_TITLES: Record<LaneKey, { title: string; blurb: string }> = {
+  store: {
+    title: "WooCommerce — woodemo.tallkarol.com",
+    blurb: "A real order row in a real store's admin, created over the REST API.",
+  },
+  router: {
+    title: "Event router",
+    blurb:
+      "Verifies signatures, dedups on an idempotency key, branches on event type, fans out to four lanes. Failures retry three times, then land in a dead-letter shelf.",
+  },
+  email: {
+    title: "Email — Resend",
+    blurb: "Designed HTML, links tagged with UTM parameters that route back through the tracker.",
+  },
+  sms: {
+    title: "SMS — the delivery line",
+    blurb:
+      "Simulated for this demo: real A2P messaging needs a registered business identity, which a fictional furniture company can't have. The wiring is real; the gateway sits behind a flag.",
+  },
+  crm: {
+    title: "Harbor & Pine CRM",
+    blurb:
+      "Contact upserted on email, order stages appended to the timeline, tags and staff tasks written as the journey moves.",
+  },
+  portal: {
+    title: "Customer portal",
+    blurb: "The page a customer refreshes instead of emailing support. Your order is in it now.",
+  },
+  analytics: {
+    title: "Insights — in-house analytics",
+    blurb:
+      "Every event above, captured in-process. No third-party tag, no sampling, no next-day lag — which is why the numbers move while you watch.",
+  },
+}
+
+function LaneDetail({
+  lane,
+  events,
+  run,
+  onClose,
+}: {
+  lane: LaneKey | null
+  events: JourneyEvent[]
+  run: RunPayload["run"]
+  onClose: () => void
+}) {
+  if (!lane) {
+    return (
+      <p className="rounded-xl border border-dashed border-tk-linen/15 px-4 py-6 text-center text-sm text-tk-linen/45">
+        Tap any box in the diagram to see exactly what it did.
+      </p>
+    )
+  }
+
+  const meta = LANE_TITLES[lane]
+  const laneEvents = events.filter((e) => e.lane === lane)
+
+  return (
+    <section className="rounded-2xl border border-tk-linen/15 bg-tk-linen/[0.04] p-5">
+      <header className="mb-4 flex items-start justify-between gap-4">
+        <div>
+          <h2 className="font-display text-base font-semibold text-tk-linen">{meta.title}</h2>
+          <p className="mt-1 max-w-2xl text-sm text-tk-linen/65">{meta.blurb}</p>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="shrink-0 rounded-md px-2 py-1 font-ui text-xs text-tk-linen/60 transition hover:bg-tk-linen/10 hover:text-tk-linen"
         >
-          <p className="text-sm text-tk-linen/80">
-            Your order is live in the portal — the page you&apos;d refresh instead of emailing
-            support.
-          </p>
-          <p className="mt-3 font-mono text-xs text-tk-linen/70">
+          Close
+        </button>
+      </header>
+
+      {lane === "portal" && (
+        <div className="mb-4 rounded-lg border border-tk-linen/15 bg-black/25 p-4">
+          <p className="font-mono text-xs text-tk-linen/80">
             {run.email} <span className="px-1 text-tk-linen/50">/</span> demo
           </p>
           <Link
@@ -253,75 +426,61 @@ export function JourneyLive({ initial }: { initial: RunPayload }) {
             Open your order
             <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
-        </LanePanel>
+        </div>
+      )}
 
-        <LanePanel icon={<BarChart3 className="h-4 w-4" aria-hidden="true" />} title="Analytics — in-house">
-          <p className="text-sm text-tk-linen/80">
-            <span className="nums font-display text-2xl font-semibold text-tk-linen">
-              {events.length}
-            </span>{" "}
-            events on this run&apos;s ledger — attribution captured in-process, no third-party
-            tag, no lag.
-          </p>
-          {lane("analytics").some((e) => e.type === "analytics.attributed") && (
-            <p className="mt-2 text-xs text-tk-linen/60">
-              Attributed: <span className="font-mono">journey_welcome</span> — the UTM on the link
-              you clicked.
-            </p>
-          )}
-        </LanePanel>
-      </div>
-
-      {/* ------------------------------------------------------ ledger */}
-      <section className="rounded-xl border border-tk-linen/15 bg-black/30">
-        <h2 className="border-b border-tk-linen/10 px-4 py-2.5 font-ui text-xs font-semibold uppercase tracking-[0.14em] text-tk-linen/60">
-          Event ledger — tail -f
-        </h2>
-        <ol className="max-h-72 overflow-y-auto px-4 py-3 font-mono text-xs leading-6 text-tk-linen/75">
-          {events
+      {laneEvents.length === 0 ? (
+        <p className="text-sm text-tk-linen/45">Nothing here yet — this lane fires later.</p>
+      ) : lane === "sms" ? (
+        <ul className="space-y-2">
+          {laneEvents.map((e) => (
+            <li
+              key={e.id}
+              className="max-w-lg rounded-2xl rounded-tl-sm bg-tk-linen/10 px-3.5 py-2 text-sm leading-relaxed text-tk-linen/85"
+            >
+              {String(e.detail?.body ?? "")}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <ul className="space-y-1.5">
+          {laneEvents
             .slice()
             .reverse()
             .map((e) => (
-              <li key={e.id} className="truncate">
-                {/* Server-rendered initial props carry Dates; polled JSON
-                    carries strings — normalize through Date either way. */}
-                <span className="text-tk-linen/50">
-                  {new Date(e.created_at).toISOString().slice(11, 19)}
-                </span>{" "}
-                <span className="text-tk-teal">{(e.lane ?? "-").padEnd(9, " ")}</span> {e.type}
+              <li key={e.id} className="flex gap-2.5 text-sm text-tk-linen/80">
+                <span
+                  aria-hidden
+                  className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-tk-teal/70"
+                />
+                <span className="min-w-0">
+                  <span className="font-mono text-xs text-tk-teal">{e.type}</span>
+                  {e.detail && Object.keys(e.detail).length > 0 && (
+                    <span className="ml-2 text-tk-linen/65">{summarize(e)}</span>
+                  )}
+                </span>
               </li>
             ))}
-        </ol>
-      </section>
-    </div>
-  )
-}
-
-function LanePanel({
-  icon,
-  title,
-  note,
-  children,
-}: {
-  icon: React.ReactNode
-  title: string
-  note?: string
-  children: React.ReactNode
-}) {
-  return (
-    <section className="rounded-xl border border-tk-linen/15 bg-tk-linen/[0.05] p-5">
-      <header className="mb-3 flex items-center gap-2">
-        <span className="grid h-7 w-7 place-items-center rounded-md bg-tk-teal/20 text-tk-linen">
-          {icon}
-        </span>
-        <h2 className="font-display text-sm font-semibold text-tk-linen">{title}</h2>
-        {note && <span className="ml-auto text-[10px] uppercase tracking-wider text-tk-linen/50">{note}</span>}
-      </header>
-      {children}
+        </ul>
+      )}
     </section>
   )
 }
 
-function Empty({ children }: { children: React.ReactNode }) {
-  return <p className="text-sm text-tk-linen/50">{children}</p>
+function summarize(event: JourneyEvent) {
+  const d = event.detail ?? {}
+  if (typeof d.body === "string") return d.body
+  if (typeof d.subject === "string") return d.subject
+  if (typeof d.entry === "string") return d.entry
+  if (typeof d.task === "string") return d.task
+  if (Array.isArray(d.tags)) return (d.tags as string[]).join(", ")
+  if (typeof d.wooOrderId === "number") return `order #${d.wooOrderId}`
+  if (typeof d.error === "string") return d.error
+  if (typeof d.contact === "string") return d.contact
+  if (typeof d.label === "string") return d.label
+  if (typeof d.note === "string") return d.note
+  if (typeof d.coupon === "string") return d.coupon
+  if (typeof d.campaign === "string") return d.campaign
+  if (typeof d.status === "string") return `status: ${d.status}`
+  return ""
 }

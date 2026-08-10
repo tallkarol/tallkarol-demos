@@ -28,6 +28,12 @@ const config = {
         "app-line": "#E3E0D8",
         "app-ink": "#1F2C2B",
 
+        // Lighthouse pass-green, same values as the marketing site — used for
+        // "done" states and the closed repeat-order loop so the demos and
+        // tallkarol.com agree on what success looks like.
+        "lh-green": "#0CCE6B",
+        "lh-green-deep": "#137333",
+
         // Status. Green/amber/red are UI state only — never a chart series,
         // and never a text colour without checking contrast on its own chip.
         "st-good": "#137333",
