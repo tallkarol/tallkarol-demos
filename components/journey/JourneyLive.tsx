@@ -124,10 +124,12 @@ export function JourneyLive({ initial }: { initial: RunPayload }) {
       />
 
       {/* ------------------------------- the show, with its run console */}
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_23rem]">
-        {/* Console first on phones: "what's it waiting on" beats a diagram
-            you'd have to scroll sideways to read. */}
-        <div className="order-2 space-y-6 lg:order-1">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_23rem]">
+        {/* Side-by-side only from xl. Below that the console stacks on top —
+            "what's it waiting on" beats a diagram you'd have to scroll
+            sideways, and the diagram then gets the full width instead of
+            being squeezed by a 23rem column. */}
+        <div className="order-2 space-y-6 xl:order-1">
           <section className="space-y-3">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <h2 className="font-display text-lg font-semibold text-tk-linen">
@@ -157,8 +159,8 @@ export function JourneyLive({ initial }: { initial: RunPayload }) {
           />
         </div>
 
-        <div className="order-1 lg:order-2">
-          <div className="lg:sticky lg:top-6">
+        <div className="order-1 xl:order-2">
+          <div className="xl:sticky xl:top-6">
             <RunConsole rows={consoleRows} />
           </div>
         </div>
