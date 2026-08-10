@@ -2,8 +2,10 @@
 
 import Link from "next/link"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { ArrowUpRight, Check, Inbox, Loader2, PartyPopper } from "lucide-react"
+import { ArrowUpRight, Inbox, Loader2, PartyPopper } from "lucide-react"
 import { LiveDiagram, type LaneKey } from "@/components/journey/LiveDiagram"
+import { RunConsole } from "@/components/journey/RunConsole"
+import { buildConsole } from "@/lib/journey/console"
 import type { Order } from "@/lib/store"
 
 type JourneyEvent = {
@@ -97,30 +99,11 @@ export function JourneyLive({ initial }: { initial: RunPayload }) {
     }
   }, [events])
 
+  const consoleRows = useMemo(() => buildConsole(run, events), [run, events])
+
   const stageTotal = run.order.timeline.length
   const delivered = run.stageIndex >= stageTotal - 1
 
-  const steps = [
-    { n: 1, label: "Order placed", done: true, active: false },
-    {
-      n: 2,
-      label: "Confirm from your inbox",
-      done: run.status !== "awaiting_click",
-      active: run.status === "awaiting_click",
-    },
-    {
-      n: 3,
-      label: "Watch it build & ship",
-      done: delivered,
-      active: run.status === "active" && !delivered,
-    },
-    {
-      n: 4,
-      label: "Close the loop",
-      done: loopClosed,
-      active: delivered && !loopClosed,
-    },
-  ]
 
   return (
     <div className="space-y-10">
@@ -132,33 +115,6 @@ export function JourneyLive({ initial }: { initial: RunPayload }) {
         </h1>
       </header>
 
-      {/* ---------------------------------------------------- step rail */}
-      <ol className="flex flex-wrap gap-x-3 gap-y-2">
-        {steps.map((step) => (
-          <li
-            key={step.n}
-            className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs transition ${
-              step.active
-                ? "border-tk-teal bg-tk-teal/15 text-tk-linen"
-                : step.done
-                  ? "border-lh-green/40 bg-lh-green/10 text-tk-linen/85"
-                  : "border-tk-linen/15 text-tk-linen/45"
-            }`}
-          >
-            <span
-              className={`grid h-4 w-4 place-items-center rounded-full text-[10px] font-bold ${
-                step.done ? "bg-lh-green text-tk-onyx" : step.active ? "bg-tk-teal text-tk-linen" : "bg-tk-linen/15"
-              }`}
-              aria-hidden="true"
-            >
-              {step.done ? <Check className="h-2.5 w-2.5" /> : step.n}
-            </span>
-            <span className="font-ui font-medium">{step.label}</span>
-            {step.done && <span className="sr-only">— done</span>}
-          </li>
-        ))}
-      </ol>
-
       {/* --------------------------------------------------- next action */}
       <NextAction
         run={run}
@@ -167,35 +123,46 @@ export function JourneyLive({ initial }: { initial: RunPayload }) {
         stageTotal={stageTotal}
       />
 
-      {/* ------------------------------------------------------ the show */}
-      <section className="space-y-3">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="font-display text-lg font-semibold text-tk-linen">
-            Your journey, on the wire
-          </h2>
-          <p className="text-xs text-tk-linen/50">
-            The same diagram from tallkarol.com — lit by your run. Tap any box to look inside.
-          </p>
-        </div>
-        <div className="overflow-x-auto rounded-2xl border border-tk-linen/12 bg-black/25 p-3 sm:p-5">
-          <LiveDiagram
-            counts={counts}
-            recent={recent}
-            selected={selected}
-            onSelect={(lane) => setSelected((current) => (current === lane ? null : lane))}
-            loopClosed={loopClosed}
-            newestLane={newestLane}
+      {/* ------------------------------- the show, with its run console */}
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_23rem]">
+        {/* Console first on phones: "what's it waiting on" beats a diagram
+            you'd have to scroll sideways to read. */}
+        <div className="order-2 space-y-6 lg:order-1">
+          <section className="space-y-3">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 className="font-display text-lg font-semibold text-tk-linen">
+                Your journey, on the wire
+              </h2>
+              <p className="text-xs text-tk-linen/50">
+                Tap any box to look inside.
+              </p>
+            </div>
+            <div className="overflow-x-auto rounded-2xl border border-tk-linen/12 bg-black/25 p-3 sm:p-5">
+              <LiveDiagram
+                counts={counts}
+                recent={recent}
+                selected={selected}
+                onSelect={(lane) => setSelected((current) => (current === lane ? null : lane))}
+                loopClosed={loopClosed}
+                newestLane={newestLane}
+              />
+            </div>
+          </section>
+
+          <LaneDetail
+            lane={selected}
+            events={events}
+            run={run}
+            onClose={() => setSelected(null)}
           />
         </div>
-      </section>
 
-      {/* --------------------------------------------------- lane detail */}
-      <LaneDetail
-        lane={selected}
-        events={events}
-        run={run}
-        onClose={() => setSelected(null)}
-      />
+        <div className="order-1 lg:order-2">
+          <div className="lg:sticky lg:top-6">
+            <RunConsole rows={consoleRows} />
+          </div>
+        </div>
+      </div>
 
       {/* -------------------------------------------------- raw ledger */}
       <details className="group rounded-xl border border-tk-linen/12 bg-black/25">
@@ -241,7 +208,7 @@ function NextAction({
     return (
       <Banner tone="teal" icon={<Inbox className="h-5 w-5" aria-hidden="true" />}>
         <p className="font-display text-lg font-semibold text-tk-linen">
-          Step 2 — open your inbox and click the button
+          Open your inbox and click the button
         </p>
         <p className="mt-1 text-sm text-tk-linen/75">
           An email is sitting in <span className="font-mono">{run.email}</span> right now.
@@ -256,7 +223,7 @@ function NextAction({
     return (
       <Banner tone="teal" icon={<Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />}>
         <p className="font-display text-lg font-semibold text-tk-linen">
-          Step 3 — it&apos;s running. Just watch.
+          It&apos;s running. Just watch.
         </p>
         <p className="mt-1 text-sm text-tk-linen/75">
           Stage <span className="nums font-semibold text-tk-linen">{run.stageIndex + 1}</span> of{" "}
@@ -272,7 +239,7 @@ function NextAction({
     return (
       <Banner tone="teal" icon={<Inbox className="h-5 w-5" aria-hidden="true" />}>
         <p className="font-display text-lg font-semibold text-tk-linen">
-          Step 4 — one more email, one more click
+          One more email, one more click
         </p>
         <p className="mt-1 text-sm text-tk-linen/75">
           It&apos;s delivered. A second email just went to{" "}

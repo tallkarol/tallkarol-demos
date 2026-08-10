@@ -129,7 +129,7 @@ export function LiveDiagram({
   }, [newestLane, counts])
 
   return (
-    <div className="relative w-full min-w-[860px]">
+    <div className="relative w-full min-w-[720px]">
       <svg
         ref={rootRef}
         viewBox={`0 0 ${W} ${H}`}

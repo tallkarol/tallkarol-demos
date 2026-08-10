@@ -24,7 +24,7 @@ export default async function JourneyRunPage({
 
   return (
     <main className="min-h-screen bg-tk-onyx text-tk-linen">
-      <div className="mx-auto max-w-5xl px-6 py-12 sm:py-16">
+      <div className="mx-auto max-w-[1440px] px-6 py-12 sm:py-16">
         <JourneyLive
           initial={{
             run: {
