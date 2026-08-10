@@ -216,9 +216,8 @@ function NextAction({
           Open your inbox and click the button
         </p>
         <p className="mt-1 text-sm text-tk-linen/75">
-          An email is sitting in <span className="font-mono">{run.email}</span> right now.
-          Nothing else happens until you click it — that&apos;s the anti-spam design,
-          seen from the inside. (Check spam if it&apos;s shy.)
+          It&apos;s in <span className="font-mono">{run.email}</span>. Nothing moves until
+          you click. (Check spam.)
         </p>
       </Banner>
     )
@@ -232,9 +231,8 @@ function NextAction({
         </p>
         <p className="mt-1 text-sm text-tk-linen/75">
           Stage <span className="nums font-semibold text-tk-linen">{run.stageIndex + 1}</span> of{" "}
-          {stageTotal} — <span className="text-tk-linen">{run.order.status}</span>. A new stage
-          lands about every minute; eight weeks of made-to-order furniture, compressed. Texts
-          start when freight is booked.
+          {stageTotal} — <span className="text-tk-linen">{run.order.status}</span>. About a
+          minute per stage.
         </p>
       </Banner>
     )
@@ -247,10 +245,8 @@ function NextAction({
           One more email, one more click
         </p>
         <p className="mt-1 text-sm text-tk-linen/75">
-          It&apos;s delivered. A second email just went to{" "}
-          <span className="font-mono">{run.email}</span> with coupon <strong>PINE10</strong> —
-          clicking it fires <span className="font-mono text-xs">coupon.redeemed</span> and closes
-          the green loop on the diagram.
+          <strong>PINE10</strong> is in <span className="font-mono">{run.email}</span>.
+          Clicking it closes the loop.
         </p>
       </Banner>
     )
@@ -316,35 +312,35 @@ function Banner({
 const LANE_TITLES: Record<LaneKey, { title: string; blurb: string }> = {
   store: {
     title: "WooCommerce — woodemo.tallkarol.com",
-    blurb: "A real order row in a real store's admin, created over the REST API.",
+    blurb: "A real order row, created over the REST API.",
   },
   router: {
     title: "Event router",
     blurb:
-      "Verifies signatures, dedups on an idempotency key, branches on event type, fans out to four lanes. Failures retry three times, then land in a dead-letter shelf.",
+      "Verifies, dedups, branches, fans out. Retries three times, then dead-letters.",
   },
   email: {
     title: "Email — Resend",
-    blurb: "Designed HTML, links tagged with UTM parameters that route back through the tracker.",
+    blurb: "Designed HTML. Links tagged so clicks come back attributed.",
   },
   sms: {
     title: "SMS — the delivery line",
     blurb:
-      "Simulated for this demo: real A2P messaging needs a registered business identity, which a fictional furniture company can't have. The wiring is real; the gateway sits behind a flag.",
+      "Simulated — a fictional company can't register for A2P. The wiring is real.",
   },
   crm: {
     title: "Harbor & Pine CRM",
     blurb:
-      "Contact upserted on email, order stages appended to the timeline, tags and staff tasks written as the journey moves.",
+      "Contact, timeline, tags, staff tasks — written as it moves.",
   },
   portal: {
     title: "Customer portal",
-    blurb: "The page a customer refreshes instead of emailing support. Your order is in it now.",
+    blurb: "The page they refresh instead of emailing support.",
   },
   analytics: {
     title: "Insights — in-house analytics",
     blurb:
-      "Every event above, captured in-process. No third-party tag, no sampling, no next-day lag — which is why the numbers move while you watch.",
+      "In-process. No third-party tag, no sampling, no lag.",
   },
 }
 

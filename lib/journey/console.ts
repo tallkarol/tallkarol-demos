@@ -110,7 +110,7 @@ export function buildConsole(run: RunLike, events: EventLike[]): ConsoleRow[] {
       { label: "Order", value: run.orderNumber },
       { label: "Run id", value: run.id },
     ],
-    note: "The whole pipeline hangs off this one event. Everything below is a consequence.",
+    note: "Everything below is a consequence of this one event.",
   })
 
   /* ------------------------------------------------- woo order creation */
@@ -131,8 +131,8 @@ export function buildConsole(run: RunLike, events: EventLike[]): ConsoleRow[] {
         ? [{ label: "Error", value: String(wooFailed.detail?.error ?? "unknown") }]
         : [{ label: "Call", value: "POST /wp-json/wc/v3/orders" }],
     note: wooFailed
-      ? "Woo was unreachable. The journey deliberately keeps running without it rather than dying — degrade, don't stop."
-      : "A real row in a real store's admin, authenticated over the REST API.",
+      ? "Woo went down. The journey keeps running anyway."
+      : "A real row in a real store's admin.",
   })
 
   /* ------------------------------------------------------ portal account */
@@ -147,7 +147,7 @@ export function buildConsole(run: RunLike, events: EventLike[]): ConsoleRow[] {
       { label: "Password", value: "demo" },
       { label: "Scope", value: "read-only, this one order" },
     ],
-    note: "Same auth the published portal demo uses — this account is just scoped to their own run.",
+    note: "Same auth as the portal demo, scoped to one order.",
   })
 
   /* ------------------------------------------------------- welcome email */
@@ -167,7 +167,7 @@ export function buildConsole(run: RunLike, events: EventLike[]): ConsoleRow[] {
       : welcomeFailed
         ? [{ label: "Error", value: String(welcomeFailed.detail?.error ?? "unknown") }]
         : [{ label: "Provider", value: "Resend" }],
-    note: "Its link is also the verification — which is why nothing after this can fire on its own.",
+    note: "The link is the verification. Nothing fires without it.",
   })
 
   /* --------------------------------------------------- WAIT: email click */
@@ -184,7 +184,7 @@ export function buildConsole(run: RunLike, events: EventLike[]): ConsoleRow[] {
       { label: "Timeout", value: "none — the run just parks here" },
       { label: "Blocks", value: "every remaining step" },
     ],
-    note: "A real automation spends most of its life parked exactly like this. No click, no further email — that's the anti-spam design.",
+    note: "Real automations spend most of their life parked here.",
   })
 
   /* ------------------------------------------------------ click received */
@@ -207,7 +207,7 @@ export function buildConsole(run: RunLike, events: EventLike[]): ConsoleRow[] {
           { label: "Woo status", value: "pending → processing" },
         ]
       : [{ label: "Waiting", value: "nothing measured until the click lands" }],
-    note: "This is the moment the tracker earns its keep: attribution is a same-region INSERT, not a next-day export.",
+    note: "Attribution as an INSERT, not a next-day export.",
   })
 
   /* ------------------------------------------------------ fulfilment loop */
@@ -230,7 +230,7 @@ export function buildConsole(run: RunLike, events: EventLike[]): ConsoleRow[] {
       { label: "Clock", value: "compressed — about a minute per stage" },
     ],
     substeps: stageRows,
-    note: "Eight weeks of made-to-order furniture. The stages are real; only the clock is compressed.",
+    note: "The stages are real. Only the clock is compressed.",
   })
 
   /* ------------------------------------------- WAIT: the workshop clock */
@@ -249,7 +249,7 @@ export function buildConsole(run: RunLike, events: EventLike[]): ConsoleRow[] {
         { label: "Measuring", value: "elapsed time only — no external system to poll" },
         { label: "Advances", value: "on read — the page you're on drives the clock" },
       ],
-      note: "In production this wait is days, driven by the workshop, not a timer.",
+      note: "In production this wait is days, not seconds.",
     })
   }
 
@@ -268,7 +268,7 @@ export function buildConsole(run: RunLike, events: EventLike[]): ConsoleRow[] {
           { label: "Link tags", value: "utm_campaign=journey_coupon" },
         ]
       : [{ label: "Fires", value: "on the delivered stage" }],
-    note: "The second designed send — and the one carrying the loop's payload.",
+    note: "The second send, carrying the loop's payload.",
   })
 
   /* -------------------------------------------------- WAIT: coupon click */
@@ -284,7 +284,7 @@ export function buildConsole(run: RunLike, events: EventLike[]): ConsoleRow[] {
       { label: "Inbox", value: run.email },
       { label: "Measuring", value: "redemption attribution — coupon × campaign × revenue" },
     ],
-    note: "This is the wait every ecommerce operator actually cares about: does the second order come?",
+    note: "The only wait an operator actually cares about.",
   })
 
   /* ------------------------------------------------------------- the loop */
@@ -301,7 +301,7 @@ export function buildConsole(run: RunLike, events: EventLike[]): ConsoleRow[] {
           { label: "Analytics", value: "redemption joined to its campaign" },
         ]
       : [{ label: "Fires", value: "when the coupon link is clicked" }],
-    note: "The green wire on the diagram. A one-time buyer became a repeat one, and the system can prove which email did it.",
+    note: "A one-time buyer became a repeat one, provably.",
   })
 
   /* Woo's webhook comes back asynchronously — surface it when it exists. */
@@ -317,7 +317,7 @@ export function buildConsole(run: RunLike, events: EventLike[]): ConsoleRow[] {
         { label: "Woo order", value: `#${String(webhook.detail?.wooOrderId ?? "—")}` },
         { label: "Status", value: String(webhook.detail?.status ?? "—") },
       ],
-      note: "The system hearing its own change come back from the store it changed.",
+      note: "The system hearing its own change come back.",
     })
   }
 
