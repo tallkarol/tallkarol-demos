@@ -261,10 +261,10 @@ function NextAction({
       <p className="font-display text-lg font-semibold text-tk-linen">
         You ran the whole system.
       </p>
+      {/* The console and diagram already itemised all of it — this line only
+          has to land the payoff. */}
       <p className="mt-1 text-sm text-tk-linen/75">
-        Order created in a real WooCommerce store, two designed emails sent and clicked,
-        attribution captured, eight fulfilment stages written to a portal you can log into, and
-        the repeat-order loop closed. That&apos;s the pitch — you just did it instead of reading it.
+        Real order, real emails, real attribution. Loop closed.
       </p>
       <div className="mt-4 flex flex-wrap gap-3">
         <Link
